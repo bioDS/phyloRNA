@@ -1,0 +1,17 @@
+Package: phyloRNA
+Title: Tools for phylogenetic analyses of scRNAseq data
+Version: 0.0.1
+Authors@R: 
+    person(given = "Jiří",
+           family = "Moravec",
+           role = c("aut", "cre"),
+           email = "jiri.c.moravec@google.com")
+Description: This package contains various tools for a phylogenetic analysis of single-seq RNA
+            sequences. This predominantly include mapping for external tools (such as samtools, GATK
+            and cellranger), functions to manipulate with file paths and functions to filter and
+            visualize results.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
