@@ -51,7 +51,7 @@ corename = function(path){
 #'
 #' @export
 abspath = function(path){
-    if(dir.exists(path)){
+    if(dir.exists(path) || file.exists(path)){
         return(tools::file_path_as_absolute(path))
         } else {
         dir = abspath(dirname(path))
