@@ -24,7 +24,9 @@ mkdir = function(dir){
 #' @return a core part of the file name
 #'
 #' @examples
-#' corename("/my/path/my.file.ext") # my.file
+#' corename("foo/bar/file.ext") # file
+#' corename("file.ext1.ext2") # file.ext1
+#'
 #'
 #' @export
 corename = function(path){
@@ -46,8 +48,8 @@ corename = function(path){
 #' @return an absolute path
 #'
 #' @examples
-#' abspath("test.txt") # equal to file.path(getwd(), "test.txt")
-#' abspath("~/my/stuff/")
+#' abspath("foo.txt") # equal to file.path(getwd(), "foo.txt")
+#' abspath("~/foo/bar/")
 #'
 #' @export
 abspath = function(path){
@@ -57,4 +59,27 @@ abspath = function(path){
         dir = abspath(dirname(path))
         return(file.path(dir, basename(path)))
         }
+    }
+
+
+#' Check if value is NULL or NA
+#'
+#' Returns `TRUE` if object is either `NULL` or `NA`. 
+#'
+#' The no value `NULL` and missing value `NA` are both used to signify no value.
+#' NULL is often used as an empty parameter in functions and `NA` is used for
+#' the same reason in the [argparse] package (because setting value to `NULL`
+#' in list and environments means to delete it).
+#'
+#' For this reason, a missing (unspecified) parameter can can reach function
+#' as both `NULL` and `NA`. This is simple shorthand to test both conditions.
+#'
+#' @param x object to be tested
+#' @return `TRUE` if the value is `NULL` or all values are `NA`
+#'
+#' @examples
+#' is_nn(NULL)
+#' is_nn(NA)
+is_nn = function(x){
+    is.null(x) || all(is.na(x))
     }
