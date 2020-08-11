@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @seealso [cellranger_count] to re-map and re-analyze `.fastq` files.
-bamtofastq = function(bam, outdir, nthreads=12, remake=FALSE){
+bamtofastq = function(bam, outdir, nthreads=4, remake=FALSE){
     statusfile = file.path(outdir, "completed")
     if(file.exists(statusfile) && !remake)
         return(invisible())

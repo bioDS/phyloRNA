@@ -14,7 +14,7 @@
 #' @seealso [cellranger_count] to use this reference directory to perform an expression analysis
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping
 #' @export
-cellranger_mkref = function(reference, annotation, outdir, nthreads=12, remake=FALSE){
+cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FALSE){
     statusfile = file.path(outdir, "completed")
     if(file.exists(statusfile) && !remake)
         return(invisible())
@@ -52,7 +52,7 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=12, remake=F
 #' @seealso [cellranger_mkref] to create the required reference genome directory (`refdir`)
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping
 #' @export
-cellranger_count = function(fastqdir, refdir, outdir, nthreads=12, remake=FALSE){
+cellranger_count = function(fastqdir, refdir, outdir, nthreads=4, remake=FALSE){
     statusfile = file.path(outdir, "completed")
     if(file.exists(statusfile) && !remake)
         return(invisible())
