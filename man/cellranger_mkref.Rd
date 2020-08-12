@@ -4,7 +4,7 @@
 \alias{cellranger_mkref}
 \title{Generate Cellranger Transcriptome Reference Genome}
 \usage{
-cellranger_mkref(reference, annotation, outdir, nthreads = 12, remake = FALSE)
+cellranger_mkref(reference, annotation, outdir, nthreads = 4, remake = FALSE)
 }
 \arguments{
 \item{reference}{a reference genome fasta file (e.g., \code{.fna})}

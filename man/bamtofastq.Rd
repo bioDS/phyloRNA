@@ -4,7 +4,7 @@
 \alias{bamtofastq}
 \title{BAM to fastq}
 \usage{
-bamtofastq(bam, outdir, nthreads = 12, remake = FALSE)
+bamtofastq(bam, outdir, nthreads = 4, remake = FALSE)
 }
 \arguments{
 \item{bam}{an input BAM file that was previously mapped using the Cellranger software}

@@ -4,7 +4,7 @@
 \alias{cellranger_count}
 \title{Estimate scRNAseq Gene Expression with Cellranger Count}
 \usage{
-cellranger_count(fastqdir, refdir, outdir, nthreads = 12, remake = FALSE)
+cellranger_count(fastqdir, refdir, outdir, nthreads = 4, remake = FALSE)
 }
 \arguments{
 \item{fastqdir}{a dir with fastq files prepared with \link{bamtofastq}}

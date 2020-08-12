@@ -21,7 +21,7 @@ the path exists. This makes it unusable in certain cases, such as when a desired
 needs to be passed to an external call.
 }
 \examples{
-abspath("test.txt") # equal to file.path(getwd(), "test.txt")
-abspath("~/my/stuff/")
+abspath("foo.txt") # equal to file.path(getwd(), "foo.txt")
+abspath("~/foo/bar/")
 
 }

@@ -18,6 +18,8 @@ is that this also removes the file type (or extension) and thus
 works as a shorthand for many file operations.
 }
 \examples{
-corename("/my/path/my.file.ext") # my.file
+corename("foo/bar/file.ext") # file
+corename("file.ext1.ext2") # file.ext1
+
 
 }
