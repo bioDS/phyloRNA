@@ -68,7 +68,7 @@ abspath = function(path){
 #'
 #' The no value `NULL` and missing value `NA` are both used to signify no value.
 #' NULL is often used as an empty parameter in functions and `NA` is used for
-#' the same reason in the [argparse] package (because setting value to `NULL`
+#' the same reason in the [argparser::argparser] package (because setting value to `NULL`
 #' in list and environments means to delete it).
 #'
 #' For this reason, a missing (unspecified) parameter can can reach function
@@ -80,6 +80,7 @@ abspath = function(path){
 #' @examples
 #' is_nn(NULL)
 #' is_nn(NA)
+#' @export
 is_nn = function(x){
     is.null(x) || all(is.na(x))
     }
