@@ -2,23 +2,18 @@
 #'
 #' Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
 #'
-#' @param input an input bam file
-#' @param output an output bam file
+#' @param input an input BAM file
+#' @param output an output BAM file
 #' @param reference a reference fasta (`.fas`) file to which the bam file was mapped
 #' @param vcf a vcf file with known polymorphic sites
+#' @param table  a table with recalibration information
 #' @template remake
 #' @name GATK
 NULL
 
-#' Mark duplicate reads
-#'
-#' runs the \code{MarkDuplicates} from the picard tools.
-#'
-#' @param input a BAM file to process
-#' @param output a BAM file with marked duplicates
-#' @param command a path to picard binary
-#' @param remake whether to remake output if it already exists
-gatk_mark_duplicates = function(input, output, remake=FALSE){
+
+#' @describeIn GATK Mark duplicate reads in SAM/BAM file. These reads are then marked with a SAM tag
+gatk_MarkDuplicates = function(input, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
 
@@ -35,22 +30,15 @@ gatk_mark_duplicates = function(input, output, remake=FALSE){
     }
 
 
-#' Sort reads
-#'
-#' runs the \code{SortSam} from the picard tools.
-#'
-#' @param input a BAM file to process
-#' @param output a BAM file with sorted reads
-#' @param command a path to picard binary
-#' @param remake whether to remake output if it already exists
-gatk_sort = function(input, output, remake=FALSE){
+#' @describeIn GATK Sort SAM or BAM file according to coordinates.
+gatk_SortSam = function(input, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
 
     args = c(
         "SortSam",
         "-I", input,
-        "-O", output
+        "-O", output,
         "-SORT_ORDER", "coordinate"
         )
 
@@ -59,18 +47,10 @@ gatk_sort = function(input, output, remake=FALSE){
     }
 
 
-#' Split reads according to Cigar coding
-#'
-#' runs SplitNCigarReads from GATK software package
-#'
-#' @param input a BAM file to process
-#' @param output a BAM file with split reads
-#' @param reference a reference fasta file to which BAM file was mapped
-#' @param command a path to gatk binary
-#' @param remake whether to remake output if it already exists
-gatk_split_cigar = function(input, output, reference, remake=FALSE){
+#' @describeIn GATK Split reads that contains N in their CIGAR string
+gatk_SplitNCigarReads = function(input, output, reference, remake=FALSE){
     if(!remake && file.exists(output))
-        return()
+        return(invisible())
 
     args = c(
         "SplitNCigarReads",
@@ -84,26 +64,18 @@ gatk_split_cigar = function(input, output, reference, remake=FALSE){
     }
 
 
-#' Recalibrate quality score
-#'
-#' runs BaseRecalibrator from the GATK software package
-#'
-#' @param input a BAM file to process
-#' @param reference a reference fasta file to which BAM file was mapped
-#' @param vcf a vcf file with known polymorphic sites
-#' @param output a table with recalibration information
-#' @param command a path to gatk binary
-#' @param remake whether to remake output if it already exists
+#' @describeIn GATK Recalibrate the base quality score and outputs a table of new recalibrated 
+#' values
 gatk_BaseRecalibrator = function(
-    input, reference, vcf, output, remake=FALSE
+    input, reference, vcf, table, remake=FALSE
     ){
-    if(!remake && file.exists(output))
-        return()
+    if(!remake && file.exists(table))
+        return(invisible())
 
     args = c(
         "BaseRecalibrator",
         "--input", input,
-        "--output", output,
+        "--output", table,
         "--reference", reference,
         "--known-sites", vcf
         )
@@ -113,27 +85,32 @@ gatk_BaseRecalibrator = function(
     }
 
 
-#' Apply base quality score recalibration
-#'
-#' runs applyBSQR from the GATK software package
-#'
-#' @param reads a BAM file to recalibrate
-#' @param reference a reference fasta file to which BAM file was mapped
-#' @param table with quality scores from BaseRecalibrator
-#' @param output a BAM file with recalibrated reads
-#' @param commandd a path to gatk binary
-#' @param remake whether to remake output if it already exists
-gatk_ApplyBQSR = function(reads, reference, table, output, remake=FALSE){
+#' @describeIn GATK Apply the base quality score recalibration according to the recalculated
+#' scores from the `[gatk_BaseRecalibrator]` 
+gatk_ApplyBQSR = function(input, reference, table, output, remake=FALSE){
     if(!remake && file.exists(output))
-        return()
+        return(invisible())
 
     args = c(
         "ApplyBQSR",
-        "--input", reads,
+        "--input", input,
         "--reference", reference,
         "--bqsr-recal-file", table,
         "--output", output
         )
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+    }
+
+
+#' @describeIn GATK Create an index for the Variant Coding File
+gatk_IndexFeatureFile = function(vcf, remake=FALSE){
+    vcf_idx = paste0(vcf, ".idx")
+    if(file.exists(vcf_idx))
+        return(invisible())
+
+    args = c("IndexFeatureFile", "--input", vcf)
 
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
