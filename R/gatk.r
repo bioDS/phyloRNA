@@ -9,6 +9,7 @@
 #' @param table  a table with recalibration information
 #' @template remake
 #' @name GATK
+#' @seealso [GATKR6] a GATK binding in the form of R6 class
 NULL
 
 

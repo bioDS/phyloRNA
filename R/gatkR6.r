@@ -6,17 +6,19 @@
 #'
 #' @details
 #' The GATK is predominantly used in a pipeline by chaining individual GATK function calls
-#' to in parts clean a bam file and prepare it for further analysis. This GATK class utilize
+#' to clean a bam file and prepare it for further analysis. This GATK class utilize
 #' the R6 method chaining to facilitate this usage.
 #'
 #' @examples
 #' \dontrun{
-#' bam = GATK$new("foo.bam", "bar.fas", "baz.vcf")
+#' bam = GATKR6$new("foo.bam", "bar.fas", "baz.vcf")
 #' bam$SortSam()$SplitNCigarReads()$Recalibrate()
 #' bam$bam
 #' }
+#'
+#' @seealso [GATK] a group of functions that partially bind to the GATK toolkit
 #' @export
-GATK = R6::R6Class("GATK",
+GATKR6 = R6::R6Class("GATK",
     public = list(
         #' @field bam a path to a current bam file. Modified during each method call to point to
         #' the result of the last GATK action.
@@ -72,7 +74,7 @@ GATK = R6::R6Class("GATK",
             },
 
         #' @description
-        # Mark duplicates
+        #' Mark duplicates
         #' @param output **optional** a path for an output bam file
         MarkDuplicates = function(output=NULL){
             if(is.null(output)) output = paste0(self$bam, ".dedup")
