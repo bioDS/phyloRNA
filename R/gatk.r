@@ -13,6 +13,7 @@ NULL
 
 
 #' @describeIn GATK Mark duplicate reads in SAM/BAM file. These reads are then marked with a SAM tag
+#' @export
 gatk_MarkDuplicates = function(input, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
@@ -31,6 +32,7 @@ gatk_MarkDuplicates = function(input, output, remake=FALSE){
 
 
 #' @describeIn GATK Sort SAM or BAM file according to coordinates.
+#' @export
 gatk_SortSam = function(input, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
@@ -48,6 +50,7 @@ gatk_SortSam = function(input, output, remake=FALSE){
 
 
 #' @describeIn GATK Split reads that contains N in their CIGAR string
+#' @export
 gatk_SplitNCigarReads = function(input, output, reference, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
@@ -66,6 +69,7 @@ gatk_SplitNCigarReads = function(input, output, reference, remake=FALSE){
 
 #' @describeIn GATK Recalibrate the base quality score and outputs a table of new recalibrated 
 #' values
+#' @export
 gatk_BaseRecalibrator = function(
     input, reference, vcf, table, remake=FALSE
     ){
@@ -87,6 +91,7 @@ gatk_BaseRecalibrator = function(
 
 #' @describeIn GATK Apply the base quality score recalibration according to the recalculated
 #' scores from the `[gatk_BaseRecalibrator]` 
+#' @export
 gatk_ApplyBQSR = function(input, reference, table, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
@@ -105,6 +110,7 @@ gatk_ApplyBQSR = function(input, reference, table, output, remake=FALSE){
 
 
 #' @describeIn GATK Create an index for the Variant Coding File
+#' @export
 gatk_IndexFeatureFile = function(vcf, remake=FALSE){
     vcf_idx = paste0(vcf, ".idx")
     if(file.exists(vcf_idx))
