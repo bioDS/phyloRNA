@@ -114,7 +114,21 @@ GATKR6 = R6::R6Class("GATK",
             self$bam = self$recalibrate
 
             invisible(self)
+            },
+
+        #' @description
+        #' Filter the sam/bam file according to tag and its values.
+        #' @param tag a name of the tag that will be used for filtering reads
+        #' @param values one or multiple values of a chosen tag
+        #' @param output **optional** a path for an output bam file
+        FilterSamReadsTag = function(tag, values, output=NULL){
+            if(is.null(output)) output = paste0(self$bam, ".filtered")
+            self$filtersamreadstag = output
+
+            gatk_FilterSamReadsTag(self$bam, self$filtersamreadstag, tag, values, self$remake)
+            self$bam = self$filtersamreadstag
+
+            invisible(self)
             }
-        
         )
     )

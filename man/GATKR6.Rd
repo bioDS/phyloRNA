@@ -46,6 +46,7 @@ the result of the last GATK action.}
 \item \href{#method-MarkDuplicates}{\code{GATKR6$MarkDuplicates()}}
 \item \href{#method-SplitNCigarReads}{\code{GATKR6$SplitNCigarReads()}}
 \item \href{#method-Recalibrate}{\code{GATKR6$Recalibrate()}}
+\item \href{#method-FilterSamReadsTag}{\code{GATKR6$FilterSamReadsTag()}}
 \item \href{#method-clone}{\code{GATKR6$clone()}}
 }
 }
@@ -141,6 +142,27 @@ Recalibrate the base quality score
 \item{\code{output}}{\strong{optional} a path for an output bam file}
 
 \item{\code{table}}{\strong{optional} a path for an output recalibration table}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-FilterSamReadsTag"></a>}}
+\if{latex}{\out{\hypertarget{method-FilterSamReadsTag}{}}}
+\subsection{Method \code{FilterSamReadsTag()}}{
+Filter the sam/bam file according to tag and its values.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GATKR6$FilterSamReadsTag(tag, values, output = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{tag}}{a name of the tag that will be used for filtering reads}
+
+\item{\code{values}}{one or multiple values of a chosen tag}
+
+\item{\code{output}}{\strong{optional} a path for an output bam file}
 }
 \if{html}{\out{</div>}}
 }

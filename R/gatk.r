@@ -122,3 +122,25 @@ gatk_IndexFeatureFile = function(vcf, remake=FALSE){
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
     }
+
+
+#' @describeIn GATK Filter sam/bam file according to tag and its value
+#' @param tag a name of tag
+#' @param values one or multiple values of particular tag to keep
+#' @export
+gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
+    if(file.exists(output))
+        return(invisible())
+
+    values = paste0("--TAG_VALUE", values)
+    args = c(
+        "FilterSamReads",
+        "--INPUT", input,
+        "--OUTPUT", output,
+        "--TAG", tag,
+        values
+        )
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+    }
