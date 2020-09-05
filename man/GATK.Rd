@@ -26,9 +26,9 @@ gatk_IndexFeatureFile(vcf, remake = FALSE)
 gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
 }
 \arguments{
-\item{input}{an input BAM file}
+\item{input}{an input sam/bam file}
 
-\item{output}{an output BAM file}
+\item{output}{an output sam/bam file}
 
 \item{remake}{whether to remake the output if it already exists}
 

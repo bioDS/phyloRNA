@@ -2,8 +2,7 @@
 #'
 #' Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
 #'
-#' @param input an input BAM file
-#' @param output an output BAM file
+#' @template io
 #' @param reference a reference fasta (`.fas`) file to which the bam file was mapped
 #' @param vcf a vcf file with known polymorphic sites
 #' @param table  a table with recalibration information
