@@ -19,7 +19,8 @@ NULL
 
 phyloRNA_options = list(
     phyloRNA.cellranger = "cellranger",
-    phyloRNA.gatk = "gatk"
+    phyloRNA.gatk = "gatk",
+    phyloRNA.python = "python3"
     )
 
 
