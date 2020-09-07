@@ -143,3 +143,22 @@ gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
     }
+
+
+#' @describeIn GATK Merge multiple sam/bam files
+#' @param inputs a vector of sam/bam files
+#' @export
+gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
+    if(file.exists(output))
+        return(invisible())
+
+    inputs = paste("--INPUT", inputs)
+    args = c(
+        "MergeSamFiles",
+        inputs,
+        "--OUTPUT", output
+        )
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+    }

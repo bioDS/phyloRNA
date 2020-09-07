@@ -9,6 +9,7 @@
 \alias{gatk_ApplyBQSR}
 \alias{gatk_IndexFeatureFile}
 \alias{gatk_FilterSamReadsTag}
+\alias{gatk_MergeSamFiles}
 \title{Mapping to the Genome Analysis ToolKit (GATK)}
 \usage{
 gatk_MarkDuplicates(input, output, remake = FALSE)
@@ -24,6 +25,8 @@ gatk_ApplyBQSR(input, reference, table, output, remake = FALSE)
 gatk_IndexFeatureFile(vcf, remake = FALSE)
 
 gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
+
+gatk_MergeSamFiles(inputs, output, remake = FALSE)
 }
 \arguments{
 \item{input}{an input sam/bam file}
@@ -41,6 +44,8 @@ gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
 \item{tag}{a name of tag}
 
 \item{values}{one or multiple values of particular tag to keep}
+
+\item{inputs}{a vector of sam/bam files}
 }
 \description{
 Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
@@ -62,6 +67,8 @@ scores from the \verb{[gatk_BaseRecalibrator]}
 \item \code{gatk_IndexFeatureFile}: Create an index for the Variant Coding File
 
 \item \code{gatk_FilterSamReadsTag}: Filter sam/bam file according to tag and its value
+
+\item \code{gatk_MergeSamFiles}: Merge multiple sam/bam files
 }}
 
 \seealso{
