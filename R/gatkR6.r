@@ -1,4 +1,3 @@
-
 #' GATK binding as an R6 class
 #'
 #' @description
