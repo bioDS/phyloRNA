@@ -1,6 +1,3 @@
-
-
-
 #' Change sam/bam tag values
 #'
 #' Change tag value in sam/bam file using regular expression.
@@ -26,6 +23,8 @@
 #' # Replace the end of 10x barcode from "-1" to "-baz"
 #' bamtagregex("foo.bam", "bar.bam", "CB", "-1", "-baz")
 #' }
+#'
+#' @export
 bamtagregex = function(input, output, tag, pattern, replace){
     args = c(
         file.path(find.package("phyloRNA"), "bamtagregex.py"),
