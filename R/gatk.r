@@ -1,6 +1,6 @@
 #' Mapping to the Genome Analysis ToolKit (GATK)
 #'
-#' Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
+#' A group of functions that map to a functionality of the Broadinstitute's Genome Analysis ToolKit.
 #'
 #' @param input an input sam/bam or vcf file (in case of Mutect2 calls)
 #' @param output an output sam/bam or vcf file (in case of Mutect2 calls)
@@ -164,6 +164,7 @@ gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
 
 
 #' @describeIn GATK Call variants (SNVs and indels) using the Mutect2 caller
+#' @export
 gatk_Mutect2 = function(input, reference, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
@@ -181,6 +182,7 @@ gatk_Mutect2 = function(input, reference, output, remake=FALSE){
 
 
 #' @describeIn GATK Filter Mutect2's VCF output
+#' @export
 gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
