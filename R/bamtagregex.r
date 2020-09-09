@@ -15,7 +15,8 @@
 #' library reads the whole file at once (instead of using memory efficient iterators), which
 #' makes working with a large bam files less than ideal.
 #'
-#' @template io
+#' @param input an input sam/bam file
+#' @param output an output sam/bam file
 #' @param tag a tag to modify
 #' @param pattern a regex pattern
 #' @param replace a string to replace matched pattern
