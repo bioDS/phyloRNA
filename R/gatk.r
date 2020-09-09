@@ -2,7 +2,8 @@
 #'
 #' Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
 #'
-#' @template io
+#' @param input an input sam/bam or vcf file (in case of Mutect2 calls)
+#' @param output an output sam/bam or vcf file (in case of Mutect2 calls)
 #' @param reference a reference fasta (`.fas`) file to which the bam file was mapped
 #' @param vcf a vcf file with known polymorphic sites
 #' @param table  a table with recalibration information
@@ -70,9 +71,7 @@ gatk_SplitNCigarReads = function(input, output, reference, remake=FALSE){
 #' @describeIn GATK Recalibrate the base quality score and outputs a table of new recalibrated 
 #' values
 #' @export
-gatk_BaseRecalibrator = function(
-    input, reference, vcf, table, remake=FALSE
-    ){
+gatk_BaseRecalibrator = function(input, reference, vcf, table, remake=FALSE){
     if(!remake && file.exists(table))
         return(invisible())
 
@@ -113,7 +112,7 @@ gatk_ApplyBQSR = function(input, reference, table, output, remake=FALSE){
 #' @export
 gatk_IndexFeatureFile = function(vcf, remake=FALSE){
     vcf_idx = paste0(vcf, ".idx")
-    if(file.exists(vcf_idx))
+    if(!remake && file.exists(vcf_idx))
         return(invisible())
 
     args = c("IndexFeatureFile", "--input", vcf)
@@ -128,7 +127,7 @@ gatk_IndexFeatureFile = function(vcf, remake=FALSE){
 #' @param values one or multiple values of particular tag to keep
 #' @export
 gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
-    if(file.exists(output))
+    if(!remake && file.exists(output))
         return(invisible())
 
     values = paste0("--TAG_VALUE", values)
@@ -149,7 +148,7 @@ gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
 #' @param inputs a vector of sam/bam files
 #' @export
 gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
-    if(file.exists(output))
+    if(!remake && file.exists(output))
         return(invisible())
 
     inputs = paste("--INPUT", inputs)
@@ -157,6 +156,40 @@ gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
         "MergeSamFiles",
         inputs,
         "--OUTPUT", output
+        )
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+    }
+
+
+#' @describeIn GATK Call variants (SNVs and indels) using the Mutect2 caller
+gatk_Mutect2 = function(input, reference, output, remake=FALSE){
+    if(!remake && file.exists(output))
+        return(invisible())
+
+    args = c(
+        "Mutect2",
+        "-I", input,
+        "-R", reference,
+        "-O", output
+        )
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+    }
+
+
+#' @describeIn GATK Filter Mutect2's VCF output
+gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
+    if(!remake && file.exists(output))
+        return(invisible())
+
+    args = c(
+        "FilterMutectCalls",
+        "-R", reference,
+        "-V", input,
+        "-O", output
         )
 
     command = getOption("phyloRNA.gatk")
