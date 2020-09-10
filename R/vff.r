@@ -15,7 +15,7 @@
 #' @export
 vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
     args = c(
-        file.path(find.packages("phyloRNA"), "vff_make.py"),
+        file.path(find.package("phyloRNA"), "vff_make.py"),
         bam, vcf,
         "--pass-only"
         )
@@ -23,7 +23,7 @@ vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
     if(!is_nn(barcodes)) barcodes = c(args, "--barcodes", barcodes)
     if(!is_nn(folder)) args = c(args, "--folder", folder)
 
-    command = getOptions("phyloRNA.python")
+    command = getOption("phyloRNA.python")
     systemE(command, args)
     }
 
@@ -41,10 +41,10 @@ vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
 #' @export
 vff_merge = function(folder, output){
     args = c(
-        file.path(find.packages("phyloRNA"), "vff_merge.py")
+        file.path(find.package("phyloRNA"), "vff_merge.py"),
         folder, output
         )
 
-    command = getOptions("phyloRNA.python")
+    command = getOption("phyloRNA.python")
     systemE(command, args)
     }

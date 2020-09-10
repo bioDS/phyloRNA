@@ -19,6 +19,6 @@ vcftools_filter = function(input, output, remake=FALSE){
         "--stdout", ">", output
         )
 
-    command = getOptions("phyloRNA.vcftools")
+    command = getOption("phyloRNA.vcftools")
     systemE(command=command, args=args)
     }
