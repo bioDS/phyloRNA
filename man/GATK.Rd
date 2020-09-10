@@ -10,6 +10,8 @@
 \alias{gatk_IndexFeatureFile}
 \alias{gatk_FilterSamReadsTag}
 \alias{gatk_MergeSamFiles}
+\alias{gatk_Mutect2}
+\alias{gatk_FilterMutectCalls}
 \title{Mapping to the Genome Analysis ToolKit (GATK)}
 \usage{
 gatk_MarkDuplicates(input, output, remake = FALSE)
@@ -27,11 +29,15 @@ gatk_IndexFeatureFile(vcf, remake = FALSE)
 gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
 
 gatk_MergeSamFiles(inputs, output, remake = FALSE)
+
+gatk_Mutect2(input, reference, output, remake = FALSE)
+
+gatk_FilterMutectCalls(input, reference, output, remake = FALSE)
 }
 \arguments{
-\item{input}{an input sam/bam file}
+\item{input}{an input sam/bam or vcf file (in case of Mutect2 calls)}
 
-\item{output}{an output sam/bam file}
+\item{output}{an output sam/bam or vcf file (in case of Mutect2 calls)}
 
 \item{remake}{whether to remake the output if it already exists}
 
@@ -48,7 +54,7 @@ gatk_MergeSamFiles(inputs, output, remake = FALSE)
 \item{inputs}{a vector of sam/bam files}
 }
 \description{
-Group of function that map to a functionality of Broadinstitute's Genome Analysis ToolKit.
+A group of functions that map to a functionality of the Broadinstitute's Genome Analysis ToolKit.
 }
 \section{Functions}{
 \itemize{
@@ -69,6 +75,10 @@ scores from the \verb{[gatk_BaseRecalibrator]}
 \item \code{gatk_FilterSamReadsTag}: Filter sam/bam file according to tag and its value
 
 \item \code{gatk_MergeSamFiles}: Merge multiple sam/bam files
+
+\item \code{gatk_Mutect2}: Call variants (SNVs and indels) using the Mutect2 caller
+
+\item \code{gatk_FilterMutectCalls}: Filter Mutect2's VCF output
 }}
 
 \seealso{

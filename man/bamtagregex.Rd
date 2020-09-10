@@ -36,4 +36,5 @@ makes working with a large bam files less than ideal.
 # Replace the end of 10x barcode from "-1" to "-baz"
 bamtagregex("foo.bam", "bar.bam", "CB", "-1", "-baz")
 }
+
 }
