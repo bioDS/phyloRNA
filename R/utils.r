@@ -84,3 +84,19 @@ abspath = function(path){
 is_nn = function(x){
     is.null(x) || all(is.na(x))
     }
+
+#' Convert a value to NA
+#'
+#' Convert a value considered to be an unknown value to the standard `NA`
+#'
+#' @param x a vector, matrix or a data frame
+#' @param empty a non-standard unknown value
+#' @return an object where a non-standard unknown value is replaced by `NA`
+#'
+#' @examples
+#' x = c("foo", "bar", "unknown")
+#' phyloRNA:::empty_to_na(x, "unknown")
+empty_to_na = function(x, empty){
+    x[x == empty] = NA
+    x
+    }
