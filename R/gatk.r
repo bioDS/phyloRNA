@@ -4,8 +4,8 @@
 #'
 #' @param input an input sam/bam or vcf file (in case of Mutect2 calls)
 #' @param output an output sam/bam or vcf file (in case of Mutect2 calls)
-#' @param reference a reference fasta (`.fas`) file to which the bam file was mapped
-#' @param vcf a vcf file with known polymorphic sites
+#' @template reference
+#' @template vcf
 #' @param table  a table with recalibration information
 #' @template remake
 #' @name GATK
