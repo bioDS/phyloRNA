@@ -41,7 +41,7 @@ gatk_FilterMutectCalls(input, reference, output, remake = FALSE)
 
 \item{remake}{whether to remake the output if it already exists}
 
-\item{reference}{a reference fasta (\code{.fas}) file to which the bam file was mapped}
+\item{reference}{a reference fasta (\code{.fas}) file to which the sam/bam file was mapped}
 
 \item{vcf}{a vcf file with known polymorphic sites}
 

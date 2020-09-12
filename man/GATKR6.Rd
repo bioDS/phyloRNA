@@ -34,7 +34,11 @@ the result of the last GATK action.}
 
 \item{\code{vcf}}{a path to the Variant Coding File (VCF)}
 
+\item{\code{outdir}}{an output directory for individual methods}
+
 \item{\code{remake}}{whether to remake already existing files}
+
+\item{\code{history}}{a method call history}
 }
 \if{html}{\out{</div>}}
 }
@@ -56,7 +60,7 @@ the result of the last GATK action.}
 \subsection{Method \code{new()}}{
 Create a new GATK object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GATKR6$new(bam, reference, vcf, remake = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GATKR6$new(bam, reference, vcf, outdir = NULL, remake = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -64,11 +68,13 @@ Create a new GATK object
 \describe{
 \item{\code{bam}}{an input bam file}
 
-\item{\code{reference}}{a path to reference genome fasta file (\code{.fas}).}
+\item{\code{reference}}{a reference fasta (\code{.fas}) file to which the sam/bam file was mapped}
 
-\item{\code{vcf}}{a path to the Variant Coding File (VCF)}
+\item{\code{vcf}}{a vcf file with known polymorphic sites}
 
-\item{\code{remake}}{whether to remake already existing files}
+\item{\code{outdir}}{\strong{optional} an output directory}
+
+\item{\code{remake}}{whether to remake the output if it already exists}
 }
 \if{html}{\out{</div>}}
 }
@@ -141,7 +147,7 @@ Recalibrate the base quality score
 \describe{
 \item{\code{output}}{\strong{optional} a path for an output bam file}
 
-\item{\code{table}}{\strong{optional} a path for an output recalibration table}
+\item{\code{table}}{\strong{optional} an output path for a new base quality scores}
 }
 \if{html}{\out{</div>}}
 }
