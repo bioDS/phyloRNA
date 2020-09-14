@@ -25,9 +25,11 @@
 #'
 #' @export
 gunzip = function(input, output=NULL, preserve=FALSE, overwrite=FALSE){
-    supported_extensions = c(".gz", ".z")
-    if(!tolower(tools::file_ext(input)) %in% supported_extensions)
-        stop("Unknown extension. Only following extensions are supported: ", supported_extensions)
+    supported_extensions = c("gz", "z")
+    if(!tolower(tools::file_ext(input)) %in% supported_extensions){
+        stop("Unknown extension. Only following extensions are supported: ",
+             paste(supported_extensions, collapse = ", "))
+        }
 
     if(!is_nn(output))
         args = c(input, "-c", ">", output)
