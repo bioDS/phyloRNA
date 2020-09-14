@@ -155,7 +155,8 @@ gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
     args = c(
         "MergeSamFiles",
         inputs,
-        "--OUTPUT", output
+        "--OUTPUT", output,
+        "--USE_THREADING"
         )
 
     command = getOption("phyloRNA.gatk")

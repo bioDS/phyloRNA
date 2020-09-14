@@ -50,20 +50,24 @@ remap = function(
 
     mkdir(outdir)
 
-    bamtofastq(input, fastqdir)
+    bamtofastq(
+        input, fastqdir,
+        nthreads = nthreads,
+        remake = remake
+        )
     cellranger_mkref(
-        reference=reference,
-        annotation=annotation,
-        outdir=refdir,
-        nthreads=nthreads,
-        remake=remake
+        reference = reference,
+        annotation = annotation,
+        outdir = refdir,
+        nthreads = nthreads,
+        remake = remake
         )
     cellranger_count(
-        fastqdir=fastqdir,
-        refdir=refdir,
-        outdir=countdir,
-        nthreads=nthreads,
-        remake=remake
+        fastqdir = fastqdir,
+        refdir = refdir,
+        outdir = countdir,
+        nthreads = nthreads,
+        remake = remake
         )
 
     prefix = corename(input)
