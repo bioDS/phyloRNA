@@ -45,6 +45,6 @@ gunzip = function(input, output=NULL, preserve=FALSE, overwrite=FALSE){
     if(!overwrite && file.exists(output))
         return(invisible())
 
-    command = getOption("phyloRNA_gunzip")
+    command = getOption("phyloRNA.gunzip")
     systemE(command, args)
     }
