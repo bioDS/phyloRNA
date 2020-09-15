@@ -165,11 +165,11 @@ GATKR6 = R6::R6Class("GATK",
             env = parent.frame()
             history = list(
                 "call" = call,
-                "input" = env$bam,
+                "input" = parent.env(env)$self$bam,
                 "output" = env$output
                 )
 
-            self$history = append(self$history, history)
+            self$history = c(self$history, list(history))
             }
         )
     )
