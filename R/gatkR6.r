@@ -17,7 +17,8 @@
 #' bam$bam
 #' }
 #'
-#' @seealso [GATK] a group of functions that partially bind to the GATK toolkit
+#' @seealso [GATK] a group of functions that partially bind to the GATK toolkit,
+#' [gatk_prepare] and [gatk_snv] for a convenience functions utilizing the GATK calls
 #' @export
 GATKR6 = R6::R6Class("GATK",
     public = list(

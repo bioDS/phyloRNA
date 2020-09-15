@@ -9,7 +9,8 @@
 #' @param table  a table with recalibration information
 #' @template remake
 #' @name GATK
-#' @seealso [GATKR6] a GATK binding in the form of R6 class
+#' @seealso [GATKR6] a GATK binding in the form of R6 class,
+#' [gatk_prepare] and [gatk_snv] for a convenience functions utilizing the GATK calls
 NULL
 
 
@@ -174,7 +175,8 @@ gatk_Mutect2 = function(input, reference, output, remake=FALSE){
         "Mutect2",
         "-I", input,
         "-R", reference,
-        "-O", output
+        "-O", output,
+        "--disable-adaptive-pruning" # suggested for RNA
         )
 
     command = getOption("phyloRNA.gatk")
