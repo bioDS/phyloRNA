@@ -125,12 +125,10 @@ GATKR6 = R6::R6Class("GATK",
             if(is.null(table)) table =
                 file.path(self$outdir, paste0(basename(self$bam), ".recal.txt"))
 
-            self$table = table
-
-            gatk_BaseRecalibrator(self$bam, self$reference, self$table, self$remake)
-            gatk_ApplyBQSR(self$bam, self$reference, self$table, output, self$remake)
-            private$add_to_history()
-            self$bam = self$recalibrate
+            gatk_BaseRecalibrator(self$bam, self$reference, self$vcf, table, self$remake)
+            gatk_ApplyBQSR(self$bam, self$reference, table, output, self$remake)
+            private$add_to_history("table"=table)
+            self$bam = output
 
             invisible(self)
             },
@@ -144,7 +142,7 @@ GATKR6 = R6::R6Class("GATK",
             if(is.null(output)) output = private$get_outfile("filtered")
 
             gatk_FilterSamReadsTag(self$bam, output, tag, values, self$remake)
-            private$add_to_history()
+            private$add_to_history("tag"=tag, "values"=values)
             self$bam = output
 
             invisible(self)
@@ -162,7 +160,7 @@ GATKR6 = R6::R6Class("GATK",
             file.path(self$outdir, outfile)
             },
 
-        add_to_history = function(){
+        add_to_history = function(...){
             call = sys.call(-1)
             env = parent.frame()
             history = list(
@@ -171,7 +169,7 @@ GATKR6 = R6::R6Class("GATK",
                 "output" = env$output
                 )
 
-            self$history = c(self$history, list(history))
+            self$history = c(self$history, list(c(history, list(...))))
             }
         )
     )
