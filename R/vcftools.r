@@ -11,12 +11,21 @@ vcftools_filter = function(input, output, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
 
+    readcmd = "--vcf"
+    writecmd = c("--stdout", ">")
+
+    if(tools::file_ext(input) == "gz")
+        readcmd = "--gzvcf"
+
+    if(tools::file_ext(output) == "gz")
+        writecmd = c(writecmd, getOption("phyloRNA.gzip"), "-c", ">")
+
     args = c(
-        "--gzvcf", input,
+        readcmd, input,
         "--remove-filtered-all",
         "--remove-indels",
         "--recode",
-        "--stdout", ">", output
+        writecmd, output
         )
 
     command = getOption("phyloRNA.vcftools")

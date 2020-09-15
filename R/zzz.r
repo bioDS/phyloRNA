@@ -22,7 +22,8 @@ phyloRNA_options = list(
     phyloRNA.bamtofastq = "bamtofastq",
     phyloRNA.gatk = "gatk",
     phyloRNA.python = "python3",
-    phyloRNA.gunzip = "gunzip"
+    phyloRNA.gunzip = "gunzip",
+    phyloRNA.gzip = "gzip"
     )
 
 
