@@ -43,7 +43,7 @@ gatk_SortSam = function(input, output, remake=FALSE){
         "SortSam",
         "-I", input,
         "-O", output,
-        "-SORT_ORDER", "coordinate"
+        "--SORT_ORDER", "coordinate"
         )
 
     command = getOption("phyloRNA.gatk")
