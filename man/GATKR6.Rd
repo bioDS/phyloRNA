@@ -20,7 +20,8 @@ bam$bam
 
 }
 \seealso{
-\link{GATK} a group of functions that partially bind to the GATK toolkit
+\link{GATK} a group of functions that partially bind to the GATK toolkit,
+\link{gatk_prepare} and \link{gatk_snv} for a convenience functions utilizing the GATK calls
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

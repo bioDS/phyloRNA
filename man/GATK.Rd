@@ -82,5 +82,6 @@ scores from the \verb{[gatk_BaseRecalibrator]}
 }}
 
 \seealso{
-\link{GATKR6} a GATK binding in the form of R6 class
+\link{GATKR6} a GATK binding in the form of R6 class,
+\link{gatk_prepare} and \link{gatk_snv} for a convenience functions utilizing the GATK calls
 }
