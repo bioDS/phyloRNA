@@ -141,7 +141,7 @@ GATKR6 = R6::R6Class("GATK",
         #' @param tag a name of the tag that will be used for filtering reads
         #' @param values one or multiple values of a chosen tag
         FilterSamReadsTag = function(tag, values, output=NULL){
-            if(is.null(output)) output = self$get_outfile("filtered")
+            if(is.null(output)) output = private$get_outfile("filtered")
 
             gatk_FilterSamReadsTag(self$bam, output, tag, values, self$remake)
             private$add_to_history()
