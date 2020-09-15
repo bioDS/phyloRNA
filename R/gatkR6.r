@@ -72,6 +72,8 @@ GATKR6 = R6::R6Class("GATK",
             # index vcf file
             gatk_IndexFeatureFile(self$vcf, remake=self$remake)
 
+            mkdir(outdir)
+
             invisible(self)
             },
  
