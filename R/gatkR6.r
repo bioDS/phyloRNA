@@ -79,10 +79,10 @@ GATKR6 = R6::R6Class("GATK",
         #' Sort the SAM/BAM file
         #'
         SortSam = function(output=NULL){
-            if(is.null(output)) output = self$get_outfile("sorted")
+            if(is.null(output)) output = private$get_outfile("sorted")
 
             gatk_SortSam(self$bam, output, self$remake)
-            self$add_to_history()
+            private$add_to_history()
             self$bam = output
 
             invisible(self)
@@ -92,10 +92,10 @@ GATKR6 = R6::R6Class("GATK",
         #' Mark duplicates
         #'
         MarkDuplicates = function(output=NULL){
-            if(is.null(output)) output = self$get_outfile("dedup")
+            if(is.null(output)) output = private$get_outfile("dedup")
 
             gatk_MarkDuplicates(self$bam, output, self$remake)
-            self$add_to_history()
+            private$add_to_history()
             self$bam = output
 
             invisible(self)
@@ -105,10 +105,10 @@ GATKR6 = R6::R6Class("GATK",
         #' Split the reads around the N in their CIGAR string.
         #'
         SplitNCigarReads = function(output=NULL){
-            if(is.null(output)) output = self$get_outfile("split")
+            if(is.null(output)) output = private$get_outfile("split")
 
             gatk_SplitNCigarReads(self$bam, output, self$reference, self$remake)
-            self$add_to_history()
+            private$add_to_history()
             self$bam = output
 
             invisible(self)
@@ -119,7 +119,7 @@ GATKR6 = R6::R6Class("GATK",
         #'
         #' @param table **optional** an output path for a new base quality scores
         Recalibrate = function(output=NULL, table=NULL){
-            if(is.null(output)) output = self$get_outfile("recal")
+            if(is.null(output)) output = private$get_outfile("recal")
             if(is.null(table)) table =
                 file.path(self$outdir, paste0(basename(self$bam), ".recal.txt"))
 
@@ -127,7 +127,7 @@ GATKR6 = R6::R6Class("GATK",
 
             gatk_BaseRecalibrator(self$bam, self$reference, self$table, self$remake)
             gatk_ApplyBQSR(self$bam, self$reference, self$table, output, self$remake)
-            self$add_to_history()
+            private$add_to_history()
             self$bam = self$recalibrate
 
             invisible(self)
@@ -142,7 +142,7 @@ GATKR6 = R6::R6Class("GATK",
             if(is.null(output)) output = self$get_outfile("filtered")
 
             gatk_FilterSamReadsTag(self$bam, output, tag, values, self$remake)
-            self$add_to_history()
+            private$add_to_history()
             self$bam = output
 
             invisible(self)
