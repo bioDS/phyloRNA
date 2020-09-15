@@ -131,7 +131,7 @@ gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
 
-    values = paste0("--TAG_VALUE", values)
+    values = paste("--TAG_VALUE", values)
     args = c(
         "FilterSamReads",
         "--INPUT", input,
