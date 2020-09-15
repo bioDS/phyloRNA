@@ -112,7 +112,7 @@ gatk_ApplyBQSR = function(input, reference, table, output, remake=FALSE){
 #' @describeIn GATK Create an index for the Variant Coding File
 #' @export
 gatk_IndexFeatureFile = function(vcf, remake=FALSE){
-    vcf_idx = paste0(vcf, ".idx")
+    vcf_idx = paste0(vcf, ".tbi")
     if(!remake && file.exists(vcf_idx))
         return(invisible())
 
