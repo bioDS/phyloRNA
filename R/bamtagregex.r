@@ -28,9 +28,9 @@ bamtagregex = function(input, output, tag, pattern, replace){
     args = c(
         file.path(find.package("phyloRNA"), "bamtagregex.py"),
         input, output,
-        "--tag", tag,
-        "--pattern", pattern,
-        "--replace", replace
+        paste0("--tag=", tag),
+        paste0("--pattern=", pattern),
+        paste0("--replace=", replace)
         )
 
     command = getOption("phyloRNA.python")
