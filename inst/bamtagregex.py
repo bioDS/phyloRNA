@@ -35,7 +35,7 @@ def read_sub_tag(read, tag, pattern, replace):
     """Replace tag value according to the pattern."""
     if read.has_tag(tag):
         value = read.get_tag(tag)
-        value = pattern.sub(value, replace)
+        value = pattern.sub(replace, value)
         read.set_tag(tag, value)
 
 
