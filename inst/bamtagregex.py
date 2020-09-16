@@ -27,7 +27,7 @@ def bamtagregex():
     with pysam.AlignmentFile(args.input, "rb") as inbam, \
          pysam.AlignmentFile(args.output, "wb", template=inbam) as outbam:
         for read in inbam.fetch(until_eof=True):
-            read_sub_tag(args.tag, pattern, args.replace)
+            read_sub_tag(read, args.tag, pattern, args.replace)
             outbam.write(read)
 
 
