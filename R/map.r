@@ -63,7 +63,7 @@ remap = function(
         remake = remake
         )
     cellranger_count(
-        fastqdir = fastqdir,
+        fastqdir = list.dirs(fastqdir, recursive=FALSE),
         refdir = refdir,
         outdir = countdir,
         nthreads = nthreads,
