@@ -132,6 +132,15 @@ gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
         return(invisible())
 
     values = paste("--TAG_VALUE", values)
+
+    # Call can crash with too many values on command line,
+    # read them from a temporary file instead:
+    if(length(values) > 10){
+        temp = tempfile()
+        writeLines(values, temp)
+        values = c("--argument_file", temp)
+        }
+
     args = c(
         "FilterSamReads",
         "--FILTER", "includeTagValues",
