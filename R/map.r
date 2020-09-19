@@ -38,7 +38,7 @@
 remap = function(
     input, reference, annotation, outdir,
     fastqdir=NULL, refdir=NULL, countdir=NULL,
-    nthreads=4, remake=FALSE,
+    nthreads=4, chemistry="auto", remake=FALSE,
     cbam=FALSE, cbar=FALSE
     ){
     if(is_nn(refdir))
@@ -66,6 +66,7 @@ remap = function(
         fastqdir = fastqdir,
         refdir = refdir,
         outdir = countdir,
+        chemistry = chemistry,
         nthreads = nthreads,
         remake = remake
         )

@@ -52,7 +52,7 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FA
 #' @seealso [cellranger_mkref] to create the required reference genome directory (`refdir`)
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping
 #' @export
-cellranger_count = function(fastqdir, refdir, outdir, nthreads=4, remake=FALSE){
+cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads=4, remake=FALSE){
     statusfile = file.path(outdir, "completed")
     if(file.exists(statusfile) && !remake)
         return(invisible())
@@ -66,7 +66,8 @@ cellranger_count = function(fastqdir, refdir, outdir, nthreads=4, remake=FALSE){
         paste0("--fastqs=", abspath(fastqdir)),
         paste0("--transcriptome=", abspath(refdir)),
         paste0("--id=", basename(outdir)),
-        paste0("--localcores=", nthreads)
+        paste0("--localcores=", nthreads),
+        paste0("--chemistry=", chemistry)
         )
 
     command = getOption("phyloRNA.cellranger")
