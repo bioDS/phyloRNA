@@ -138,7 +138,7 @@ gatk_FilterSamReadsTag = function(input, output, tag, values, remake=FALSE){
     if(length(values) > 10){
         temp = tempfile()
         writeLines(values, temp)
-        values = c("--argument_file", temp)
+        values = c("--argument_files", temp)
         }
 
     args = c(
