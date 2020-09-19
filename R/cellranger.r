@@ -48,6 +48,7 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FA
 #'
 #' @param fastqdir a dir with fastq files prepared with [bamtofastq]
 #' @param refdir a directory with the reference files created by the [cellranger_mkref]
+#' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
 #'
 #' @seealso [cellranger_mkref] to create the required reference genome directory (`refdir`)
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping

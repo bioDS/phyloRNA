@@ -13,6 +13,7 @@ remap(
   refdir = NULL,
   countdir = NULL,
   nthreads = 4,
+  chemistry = "auto",
   remake = FALSE,
   cbam = FALSE,
   cbar = FALSE
@@ -25,22 +26,25 @@ remap(
 
 \item{annotation}{a GTF (\code{.gtf}) annotation file associated with the reference genome}
 
-\item{outdir}{a directory where the}
+\item{outdir}{a directory where the output will be generated}
 
-\item{fastqdir}{an optional directory for the \link{bamtofastq}, see details}
+\item{fastqdir}{\strong{optional} a directory for the \link{bamtofastq}, see details}
 
-\item{refdir}{an optional directory for the \link{cellranger_mkref}, see details}
+\item{refdir}{**optional a directory for the \link{cellranger_mkref}, see details}
 
-\item{countdir}{an optional directory for the \link{cellranger_count}, see details}
+\item{countdir}{\strong{optional} a directory for the \link{cellranger_count}, see details}
 
 \item{nthreads}{a number of threads to run on}
 
+\item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
+
 \item{remake}{whether to remake the output if it already exists}
 
-\item{cbam}{a TRUE value or file path to a location where the re-mapped bam file will be copied}
-
-\item{cbar}{a TRUE value or file path to a location where the file with filtered barcodes
+\item{cbam}{\strong{optional} a TRUE value or file path to a location where the re-mapped bam file
 will be copied}
+
+\item{cbar}{\strong{optional} a TRUE value or file path to a location where the file with filtered
+barcodes will be copied}
 }
 \description{
 This function will remap a bam file previously mapped by the Cellranger software to a new genome.

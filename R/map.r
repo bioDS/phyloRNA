@@ -25,13 +25,15 @@
 #' @param input a bam file previously mapped by the Cellranger software
 #' @param reference a reference genome fasta file (e.g., `.fna`)
 #' @param annotation a GTF (`.gtf`) annotation file associated with the reference genome
-#' @param outdir a directory where the 
-#' @param fastqdir an optional directory for the [bamtofastq], see details
-#' @param refdir an optional directory for the [cellranger_mkref], see details
-#' @param countdir an optional directory for the [cellranger_count], see details
-#' @param cbam a TRUE value or file path to a location where the re-mapped bam file will be copied 
-#' @param cbar a TRUE value or file path to a location where the file with filtered barcodes
-#' will be copied
+#' @param outdir a directory where the output will be generated
+#' @param fastqdir **optional** a directory for the [bamtofastq], see details
+#' @param refdir **optional a directory for the [cellranger_mkref], see details
+#' @param countdir **optional** a directory for the [cellranger_count], see details
+#' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
+#' @param cbam **optional** a TRUE value or file path to a location where the re-mapped bam file
+#' will be copied 
+#' @param cbar **optional** a TRUE value or file path to a location where the file with filtered
+#' barcodes will be copied
 #' @seealso [bamtofastq], [cellranger_mkref] and [cellranger_count] for details on the steps
 #' performed by the `remap` function.
 #' @export 

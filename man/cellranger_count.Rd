@@ -4,7 +4,14 @@
 \alias{cellranger_count}
 \title{Estimate scRNAseq Gene Expression with Cellranger Count}
 \usage{
-cellranger_count(fastqdir, refdir, outdir, nthreads = 4, remake = FALSE)
+cellranger_count(
+  fastqdir,
+  refdir,
+  outdir,
+  chemistry = "auto",
+  nthreads = 4,
+  remake = FALSE
+)
 }
 \arguments{
 \item{fastqdir}{a dir with fastq files prepared with \link{bamtofastq}}
@@ -12,6 +19,8 @@ cellranger_count(fastqdir, refdir, outdir, nthreads = 4, remake = FALSE)
 \item{refdir}{a directory with the reference files created by the \link{cellranger_mkref}}
 
 \item{outdir}{a non-existing output directory, see details}
+
+\item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
 
 \item{nthreads}{a number of threads to run on}
 
