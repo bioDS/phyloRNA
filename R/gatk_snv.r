@@ -18,6 +18,7 @@
 #' @seealso [GATK] and [GATKR6] for a binding to indiviual GATK functions,
 #' [gatk_prepare] for another convenience function build on GATK calls,
 #' [vcftools_filter()] for more information on the `vcftools` call used in this function
+#' @export
 gatk_snv = function(input, reference, output, outdir=NULL, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
