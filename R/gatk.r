@@ -130,7 +130,7 @@ gatk_BuildBamIndex = function(input, remake=FALSE){
     if(!remake && file.exists(input_idx))
         return(invisible())
 
-    args = c("BuildBamIndex", "--input", input)
+    args = c("BuildBamIndex", "--INPUT", input)
 
     command = getOption("phyloRNA.gatk")
     systemE(command = command, args=args)
