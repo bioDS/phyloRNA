@@ -84,7 +84,7 @@ expr_read10xh5 = function(input, use_names=TRUE, unique_features=TRUE){
             i = indices[] + 1,
             p = indptr[],
             x = as.numeric(counts[]),
-            dim = shp[],
+            dims = shp[],
             giveCsparse = FALSE
             )
         if(unique_features){
