@@ -88,7 +88,7 @@ expr_read10xh5 = function(input, use_names=TRUE, unique_features=TRUE){
             giveCsparse = FALSE
             )
         if(unique_features){
-            features = make.unique(features)
+            features = make.unique(features[])
             }
         rownames(sparse_matrix) = features
         colnames(sparse_matrix) = barcodes[]
@@ -157,7 +157,7 @@ get_features = function(file, gene_column=2, make_unique=TRUE){
         }
 
     if(make_unique)
-        features[gene_column] = make.unique(features[gene_column])
+        features[, gene_column] = make.unique(features[, gene_column])
 
     return(features)
     }
