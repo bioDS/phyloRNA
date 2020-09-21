@@ -21,6 +21,7 @@ phyloRNA_options = list(
     phyloRNA.cellranger = "cellranger",
     phyloRNA.bamtofastq = "bamtofastq",
     phyloRNA.gatk = "gatk",
+    phyloRNA.gatk = "vcftools",
     phyloRNA.python = "python3",
     phyloRNA.gunzip = "gunzip",
     phyloRNA.gzip = "gzip"
