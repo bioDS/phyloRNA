@@ -32,6 +32,7 @@ gatk_snv = function(input, reference, output, outdir=NULL, remake=FALSE){
     vcf_filtered = file.path(outdir, paste0(core, ".filtered.vcf.gz"))
     vcf_snv = file.path(outdir, paste0(core, ".snv.vcf.gz"))
 
+    gatk_BuildBamIndex(input, remake)
     gatk_Mutect2(input, reference, vcf, remake)
     gatk_FilterMutectCalls(vcf, reference, vcf_filtered, remake)
     vcftools_filter(vcf_filtered, vcf_snv, remake)

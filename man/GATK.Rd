@@ -8,6 +8,7 @@
 \alias{gatk_BaseRecalibrator}
 \alias{gatk_ApplyBQSR}
 \alias{gatk_IndexFeatureFile}
+\alias{gatk_BuildBamIndex}
 \alias{gatk_FilterSamReadsTag}
 \alias{gatk_MergeSamFiles}
 \alias{gatk_Mutect2}
@@ -25,6 +26,8 @@ gatk_BaseRecalibrator(input, reference, vcf, table, remake = FALSE)
 gatk_ApplyBQSR(input, reference, table, output, remake = FALSE)
 
 gatk_IndexFeatureFile(vcf, remake = FALSE)
+
+gatk_BuildBamIndex(input, remake = FALSE)
 
 gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
 
@@ -71,6 +74,8 @@ values
 scores from the \verb{[gatk_BaseRecalibrator]}
 
 \item \code{gatk_IndexFeatureFile}: Create an index for the Variant Coding File
+
+\item \code{gatk_BuildBamIndex}: Create an index for the bam
 
 \item \code{gatk_FilterSamReadsTag}: Filter sam/bam file according to tag and its value
 

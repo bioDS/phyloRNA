@@ -123,6 +123,20 @@ gatk_IndexFeatureFile = function(vcf, remake=FALSE){
     }
 
 
+#' @describeIn GATK Create an index for the bam
+#' @export
+gatk_BuildBamIndex = function(input, remake=FALSE){
+    input_idx = paste0(input, ".bai")
+    if(!remake && file.exists(input_idx))
+        return(invisible())
+
+    args = c("BuildBamIndex", "--input", input)
+
+    command = getOption("phyloRNA.gatk")
+    systemE(command = command, args=args)
+    }
+
+
 #' @describeIn GATK Filter sam/bam file according to tag and its value
 #' @param tag a name of tag
 #' @param values one or multiple values of particular tag to keep
