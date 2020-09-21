@@ -126,7 +126,7 @@ gatk_IndexFeatureFile = function(vcf, remake=FALSE){
 #' @describeIn GATK Create an index for the bam
 #' @export
 gatk_BuildBamIndex = function(input, remake=FALSE){
-    input_idx = paste0(input, ".bai")
+    input_idx = paste0(tools::file_path_sans_ext(input), ".bai")
     if(!remake && file.exists(input_idx))
         return(invisible())
 
