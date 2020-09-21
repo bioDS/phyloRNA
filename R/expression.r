@@ -161,3 +161,30 @@ get_features = function(file, gene_column=2, make_unique=TRUE){
 
     return(features)
     }
+
+
+
+#' @describeIn expr Log-normalize data. Feature counts for each cell are divided by the total count
+#' for that cell multiplied by a scale factor. This is then natural log transformed using log1p.
+#'
+#' @param data an expression matrix 
+#' @param scale_factor **optional** a scaling factor
+#' @return log-normalized matrix
+#'
+#' @export
+expr_normalize = function(data, scale_factor=10000){
+    totals = rowSums(data, na.rm=TRUE)
+    x = log1p( (data/totals) * scale_factor)
+    data
+    }
+
+
+#' @describeIn expr Scale and center features
+#'
+#' @param data an expression matrix
+#' @return rescaled and centered data
+#'
+#' @export
+expr_scale = function(data){
+    t(scale(t(data)))
+    }
