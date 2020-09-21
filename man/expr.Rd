@@ -6,6 +6,7 @@
 \alias{expr_read10xh5}
 \alias{expr_normalize}
 \alias{expr_scale}
+\alias{expr_zero_to_na}
 \title{Functions for manipulation with the expression data}
 \usage{
 expr_read10x(
@@ -20,6 +21,8 @@ expr_read10xh5(input, use_names = TRUE, unique_features = TRUE)
 expr_normalize(data, scale_factor = 10000)
 
 expr_scale(data)
+
+expr_zero_to_na(data)
 }
 \arguments{
 \item{dir}{a directory with barcodes, features and sparse matrix}
@@ -35,7 +38,7 @@ name conflict}
 
 \item{use_names}{\strong{optional} use gene names instead of gene IDs}
 
-\item{data}{an expression matrix}
+\item{data}{a sparse matrix}
 
 \item{scale_factor}{\strong{optional} a scaling factor}
 }
@@ -47,6 +50,8 @@ a list of sparse matrices
 log-normalized matrix
 
 rescaled and centered data
+
+a dense matrix with \code{NA} instead of zeros
 }
 \description{
 A group of functions, often lifted and modified from the Seurat package for manipulation with the 10X scRNAseq data.
@@ -65,6 +70,9 @@ The second issue is the huge amount of dependencies that the Seurat brings. Due 
 \item \code{expr_normalize}: Log-normalize data. Feature counts for each cell are divided by the total count
 for that cell multiplied by a scale factor. This is then natural log transformed using log1p.
 
-\item \code{expr_scale}: Scale and center features
+\item \code{expr_scale}: Scale and center genes/features
+
+\item \code{expr_zero_to_na}: Transform a sparse matrix into dense matrix where zeros are respresented
+as \code{NA}.
 }}
 

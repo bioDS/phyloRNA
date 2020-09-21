@@ -179,7 +179,7 @@ expr_normalize = function(data, scale_factor=10000){
     }
 
 
-#' @describeIn expr Scale and center features
+#' @describeIn expr Scale and center genes/features
 #'
 #' @param data an expression matrix
 #' @return rescaled and centered data
@@ -187,4 +187,17 @@ expr_normalize = function(data, scale_factor=10000){
 #' @export
 expr_scale = function(data){
     t(scale(t(data)))
+    }
+
+
+#' @describeIn expr Transform a sparse matrix into dense matrix where zeros are respresented
+#' as `NA`.
+#'
+#' @param data a sparse matrix
+#' @return a dense matrix with `NA` instead of zeros
+#'
+#' @export
+expr_zero_to_na = function(data){
+    data[data == 0] = NA
+    as.matrix(data)
     }
