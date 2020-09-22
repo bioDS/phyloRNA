@@ -17,7 +17,7 @@ vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
     args = c(
         file.path(find.package("phyloRNA"), "vff_make.py"),
         bam, vcf,
-        "--pass-only"
+        "--pass_only"
         )
 
     if(!is_nn(barcodes)) barcodes = c(args, "--barcodes", barcodes)
