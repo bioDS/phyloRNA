@@ -40,7 +40,7 @@ IndexedVector = R6::R6Class("IndexedVector", list(
     #'
     #' @param indices indices specifying elements to extract
     subset = function(indices){
-        self$values = self$vector[indices]
+        self$values = self$values[indices]
         self$indices = self$indices[indices]
         invisible(self)
         },
@@ -77,7 +77,7 @@ IndexedVector = R6::R6Class("IndexedVector", list(
     #'
     #' @param vec that is substracted from IndexedVector values
     substract = function(vec){
-        self$values = self$vector - vec
+        self$values = self$values - vec
         invisible(self)
         },
 
