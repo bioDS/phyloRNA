@@ -7,6 +7,9 @@
 \alias{expr_normalize}
 \alias{expr_scale}
 \alias{expr_zero_to_na}
+\alias{expr_quality_filter}
+\alias{expr_merge}
+\alias{expr_discretize}
 \title{Functions for manipulation with the expression data}
 \usage{
 expr_read10x(
@@ -23,6 +26,12 @@ expr_normalize(data, scale_factor = 10000)
 expr_scale(data)
 
 expr_zero_to_na(data)
+
+expr_quality_filter(data, minUMI = 500, minGene = 250, trim = TRUE)
+
+expr_merge(datasets, names = NULL)
+
+expr_discretize(data, intervals, unknown = "N")
 }
 \arguments{
 \item{dir}{a directory with barcodes, features and sparse matrix}
@@ -38,9 +47,24 @@ name conflict}
 
 \item{use_names}{\strong{optional} use gene names instead of gene IDs}
 
-\item{data}{a sparse matrix}
+\item{data}{an expression matrix}
 
 \item{scale_factor}{\strong{optional} a scaling factor}
+
+\item{minUMI}{minimum of UMI (unique molecules) per cell}
+
+\item{minGene}{minimum represented genes/features per cell}
+
+\item{trim}{\strong{optional} trim empty genes after filtering}
+
+\item{datasets}{list of datasets to be merged}
+
+\item{names}{\strong{optional} list of suffixes used to distinguish individual datasets}
+
+\item{intervals}{an interval vector describing interval borders, i.e., interval c(-1, 1)
+would describe half-open intervals: [-Inf -1), [-1, 1) and [1, Inf).}
+
+\item{unknown}{\strong{optional} a character that represents unknown character}
 }
 \value{
 sparse matrix
@@ -52,6 +76,12 @@ log-normalized matrix
 rescaled and centered data
 
 a dense matrix with \code{NA} instead of zeros
+
+filtered matrix
+
+merged datasets
+
+descritized matrix
 }
 \description{
 A group of functions, often lifted and modified from the Seurat package for manipulation with the 10X scRNAseq data.
@@ -74,5 +104,11 @@ for that cell multiplied by a scale factor. This is then natural log transformed
 
 \item \code{expr_zero_to_na}: Transform a sparse matrix into dense matrix where zeros are respresented
 as \code{NA}.
+
+\item \code{expr_quality_filter}: Filter the expression matrix according to quality metrics
+
+\item \code{expr_merge}: Merge multiple datasets
+
+\item \code{expr_discretize}: Discretize expression matrix according to interval vector.
 }}
 
