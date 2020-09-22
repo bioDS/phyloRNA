@@ -11,7 +11,7 @@
 #' @return a character vector
 #'
 #' @export
-fasta = function(data, margin=1, file=NULL){
+fasta = function(data, margin=2, file=NULL){
     if(anyNA(data))
         stop("Data must not contain unknown values (NA).")
 

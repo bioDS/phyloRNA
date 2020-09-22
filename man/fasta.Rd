@@ -4,7 +4,7 @@
 \alias{fasta}
 \title{Transform matrix into a fasta format}
 \usage{
-fasta(data, margin = 1, file = NULL)
+fasta(data, margin = 2, file = NULL)
 }
 \arguments{
 \item{data}{a character matrix}
