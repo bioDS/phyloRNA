@@ -243,15 +243,15 @@ expr_merge = function(datasets, names=NULL){
         }
 
     # collect rownames and colnames
-    rownames = unique(unlist(lapply(rownames(datasets))))
-    colnames = unlist(lapply(colnames(datasets)))
+    row_names = unique(unlist(lapply(datasets, rownames)))
+    col_names = unlist(lapply(datasets, colnames))
 
     # prealocate matrix
     data = matrix(
         NA,
-        nrow=length(rownames),
-        ncol=length(colnames),
-        dimnames=list(rownames, colnames)
+        nrow=length(row_names),
+        ncol=length(col_names),
+        dimnames=list(row_names, col_names)
         )
 
     # fill matrix
