@@ -21,7 +21,7 @@ IndexedVector = R6::R6Class("IndexedVector", list(
     #' @param indices **optional** vector of indices. If not provided, `seq_along(values)` is used.
     #' @return a new `IndexedVector` object
     initialize = function(values, indices=NULL){
-        self$values = vector
+        self$values = values
         self$indices = indices
         if(is_nn(indices))
             self$indices = seq_along(values)
