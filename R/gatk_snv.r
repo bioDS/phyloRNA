@@ -26,6 +26,7 @@ gatk_snv = function(input, reference, output, outdir=NULL, remake=FALSE){
     if(!is_nn(outdir))
         outdir = file.path(dirname(output), "snv")
 
+    mkdir(outdir)    
     core = corename(input)
 
     vcf = file.path(outdir, paste0(core, ".vcf.gz"))
