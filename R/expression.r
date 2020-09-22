@@ -239,7 +239,7 @@ expr_merge = function(datasets, names=NULL){
 
     # Fix colnames
     for(i in seq_along(datasets)){
-        colnames(datasets[[i]]) = paste0(sub("-1$", "", colnames(datasets[i])), "-", names[i])
+        colnames(datasets[[i]]) = paste0(sub("-1$", "", colnames(datasets[[i]])), "-", names[i])
         }
 
     # collect rownames and colnames
