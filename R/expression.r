@@ -270,6 +270,8 @@ expr_merge = function(datasets, names=NULL){
 #' would describe half-open intervals: [-Inf -1), [-1, 1) and [1, Inf).
 #' @param unknown **optional** a character that represents unknown character
 #' @return descritized matrix
+#'
+#' @export
 expr_discretize = function(data, intervals, unknown="N"){
     if(!identical(intervals, sort(intervals)))
         stop("Interval borders must be in sequential order!")
