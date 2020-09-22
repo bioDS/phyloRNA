@@ -23,7 +23,7 @@ IndexedVector = R6::R6Class("IndexedVector", list(
     initialize = function(values, indices=NULL){
         self$values = vector
         self$indices = indices
-        if(is.nn(indices))
+        if(is_nn(indices))
             self$indices = seq_along(values)
         if(length(self$values) != length(self$indices))
             stop("Vector and indices must have the same length")
