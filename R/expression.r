@@ -256,7 +256,7 @@ expr_merge = function(datasets, names=NULL){
 
     # fill matrix
     for(dataset in datasets){
-        data[rownames(dataset), colnames(dataset)] = dataset
+        data[rownames(dataset), colnames(dataset)] = as.matrix(dataset)
         }
 
     return(data)
