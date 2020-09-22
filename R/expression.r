@@ -201,3 +201,94 @@ expr_zero_to_na = function(data){
     data[data == 0] = NA
     as.matrix(data)
     }
+
+
+#' @describeIn expr Filter the expression matrix according to quality metrics
+#'
+#' @param data expression matrix
+#' @param minUMI minimum of UMI (unique molecules) per cell
+#' @param minGene minimum represented genes/features per cell
+#' @param trim **optional** trim empty genes after filtering
+#' @return filtered matrix
+#'
+#' @export
+expr_quality_filter = function(data, minUMI = 500, minGene=250, trim=TRUE){
+    UMI = Matrix::colSums(data)
+    nGene = Matrix::colSums(data > 0)
+
+    data = data[, UMI > minUMI & nGene > minGene]
+    if(trim)
+        data = data[Matrix::rowSums(data) > 0,]
+
+    data
+    }
+
+
+#' @describeIn expr Merge multiple datasets
+#'
+#' @param datasets list of datasets to be merged
+#' @param  names **optional** list of suffixes used to distinguish individual datasets
+#' @return merged datasets
+#'
+#' @export
+expr_merge = function(datasets, names=NULL){
+    if(is.null(names))
+        names = names(datasets)
+    if(is.null(names))
+        names = as.character(seq_along(datasets))
+
+    # Fix colnames
+    for(i in seq_along(datasets)){
+        colnames(datasets[[i]]) = paste0(sub("-1$", "", colnames(datasets[i])), "-", names[i])
+        }
+
+    # collect rownames and colnames
+    rownames = unique(unlist(lapply(rownames(datasets))))
+    colnames = unlist(lapply(colnames(datasets)))
+
+    # prealocate matrix
+    data = matrix(
+        NA,
+        nrow=length(rownames),
+        ncol=length(colnames),
+        dimnames=list(rownames, colnames)
+        )
+
+    # fill matrix
+    for(dataset in datasets){
+        data[rownames(dataset), colnames(dataset)] = dataset
+        }
+
+    return(data)
+    }
+
+
+#' @describeIn expr Discretize expression matrix according to interval vector.
+#'
+#' @param data an expression matrix
+#' @param intervals an interval vector describing interval borders, i.e., interval c(-1, 1)
+#' would describe half-open intervals: [-Inf -1), [-1, 1) and [1, Inf).
+#' @param unknown **optional** a character that represents unknown character
+#' @return descritized matrix
+expr_discretize = function(data, intervals, unknown="N"){
+    if(!identical(intervals, sort(intervals)))
+        stop("Interval borders must be in sequential order!")
+    if(length(intervals) != length(unique(intervals)))
+        stop("Interval borders must be unique!")
+    if(intervals[1] != -Inf)
+        intervals = c(-Inf, intervals)
+    if(intervals[length(intervals)] != Inf)
+        intervals = c(intervals, Inf)
+    if(nchar(unknown) != 1)
+        stop("The unknown variable must be exactly single character")
+
+    discretized = data
+    discretized[] = unknown
+    for(i in seq_len(length(intervals) - 1)){
+        from = intervals[i]
+        to = intervals[i+1]
+        discretized[data >= from & data < to] = i
+        }
+
+    discretized
+    }
