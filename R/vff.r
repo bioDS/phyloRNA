@@ -20,7 +20,7 @@ vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
         "--pass_only"
         )
 
-    if(!is_nn(barcodes)) barcodes = c(args, "--barcodes", barcodes)
+    if(!is_nn(barcodes)) args = c(args, "--barcodes", barcodes)
     if(!is_nn(folder)) args = c(args, "--folder", folder)
 
     command = getOption("phyloRNA.python")
