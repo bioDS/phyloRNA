@@ -13,11 +13,12 @@
 #' @param folder **optional** an output folder
 #'
 #' @export
-vff_make = function(bam, vcf, barcodes=NULL, folder=NULL){
+vff_make = function(bam, vcf, barcodes=NULL, folder=NULL, nthreads=16){
     args = c(
         file.path(find.package("phyloRNA"), "vff_make.py"),
         bam, vcf,
         "--pass_only"
+        "--nthreads", nthreads
         )
 
     if(!is_nn(barcodes)) args = c(args, "--barcodes", barcodes)

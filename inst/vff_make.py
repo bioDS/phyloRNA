@@ -6,7 +6,7 @@ import sys
 import collections
 import argparse
 import pysam
-
+from multiprocessing import Pool
 
 def parse_args():
     """Parse command line arguments"""
@@ -20,6 +20,7 @@ def parse_args():
     parser.add_argument("--vff", type=str, help="An output VFF file, in case barcodes are not used")
     parser.add_argument("--pass_only", action="store_true",
                         help="Filter the VCF so only PASSed variants are considered")
+    parser.add_argument("--nthreads", type=int, help="Number of threads to run in paralell")
     parser.add_argument("--remake", action="store_true",
                         help="Remake files if they already exists.")
     group = parser.add_mutually_exclusive_group(required=False)
@@ -37,6 +38,7 @@ def main(
         pass_only=True,
         barcodes=None,
         barcode=None,
+        nthreads=None,
         remake=False):
     # TODO: too many arguments? Maybe there is a better way to handle this?
     # pylint: disable=too-many-arguments,missing-docstring
@@ -48,18 +50,17 @@ def main(
 
     with pysam.AlignmentFile(bam, "rb") as bamfile, \
         pysam.VariantFile(vcf, "rb") as vcfile:
+
         if barcode:
-            vff = vff_path(folder, barcode)
-            if remake or not os.path.isfile(vff):
-                make_vff(vff, bamfile, vcfile, pass_only, barcode)
+            process_barcode(barcode, bamfile, vcfile, folder, pass_only)
 
         elif barcodes:
             barcodes = read_barcodes(barcodes)
-            for barcode in barcodes:
-                vff = vff_path(folder, barcode)
-                if remake or not os.path.isfile(vff):
-                    print("Processing barcode: ", barcode)
-                    make_vff(vff, bamfile, vcfile, pass_only, barcode)
+            with Pool(nthreads) as pool:
+                pool.map(
+                    lambda x: process_barcode(
+                        x, bamfile, vcfile, folder, pass_only, message=True, remake=remake),
+                    barcodes)
 
         else:
             if remake or not os.path.isfile(vff):
@@ -74,6 +75,16 @@ def read_barcodes(barcodes):
     return text
 
 
+
+def process_barcode(barcode, bamfile, vcfile, folder, pass_only=True, message=False, remake=False):
+    """Process barcode (cell) and create variant frequency file"""
+    vff = vff_path(folder, barcode)
+    if remake or not os.path.isfile(vff):
+        if message:
+            print("Processing barcode: ", barcode)
+        make_vff(vff, bamfile, vcfile, pass_only, barcode)
+
+
 def make_vff(filename, bamfile, vcfile, pass_only=True, barcode=None):
     """Write a Variant Frequency File using a BAM and VCF file handles"""
     with open(filename, "wt")  as vffile:
@@ -83,14 +94,14 @@ def make_vff(filename, bamfile, vcfile, pass_only=True, barcode=None):
 
 def process_variants(vffile, bamfile, vcfile, pass_only=True, barcode=None):
     """Process VCF variants"""
-    for variant in vcfile.fetch():
+    for variant in vcfile.fetch(reopen=True):
         if pass_only and not passed_filter(variant):
             continue
         # pysam has 0-based indexing
         # VCF file is 1-based indexing (variant.pos)
         # variant.start is the correct position of variant in 0-based indexing
         # Note that with fetch, both start and end must be provided
-        reads = bamfile.fetch(variant.contig, variant.start, variant.stop)
+        reads = bamfile.fetch(variant.contig, variant.start, variant.stop, multiple_iterators=True)
         reads = [read for read in reads]
         if barcode:
             reads = get_reads_with_barcode(reads, barcode)
