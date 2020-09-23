@@ -5,8 +5,9 @@ import os
 import sys
 import collections
 import argparse
-import pysam
+from functools import partial
 from multiprocessing import Pool
+import pysam
 
 def parse_args():
     """Parse command line arguments"""
@@ -56,11 +57,17 @@ def main(
 
         elif barcodes:
             barcodes = read_barcodes(barcodes)
+            process_barcode_partial = partial(
+                process_barcode,
+                bamfile=bamfile,
+                vcfile=vcfile,
+                folder=folder,
+                pass_only=pass_only,
+                message=True,
+                remake=remake
+                )
             with Pool(nthreads) as pool:
-                pool.map(
-                    lambda x: process_barcode(
-                        x, bamfile, vcfile, folder, pass_only, message=True, remake=remake),
-                    barcodes)
+                pool.map(process_barcode_partial, barcodes)
 
         else:
             if remake or not os.path.isfile(vff):
