@@ -4,7 +4,7 @@
 \alias{vff_make}
 \title{Make a varian frequency files}
 \usage{
-vff_make(bam, vcf, barcodes = NULL, folder = NULL)
+vff_make(bam, vcf, barcodes = NULL, folder = NULL, nthreads = 16)
 }
 \arguments{
 \item{bam}{an input bam file}
@@ -14,6 +14,8 @@ vff_make(bam, vcf, barcodes = NULL, folder = NULL)
 \item{barcodes}{\strong{optional} a barcode file}
 
 \item{folder}{\strong{optional} an output folder}
+
+\item{nthreads}{\strong{optional} number of threads to run in parallel}
 }
 \description{
 Calculate the base frequency for every cell barcode in the bam file for every variant in the vcf.

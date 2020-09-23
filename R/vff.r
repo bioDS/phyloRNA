@@ -11,13 +11,14 @@
 #' @param vcf an input vcf file
 #' @param barcodes **optional** a barcode file
 #' @param folder **optional** an output folder
+#' @param nthreads **optional** number of threads to run in parallel
 #'
 #' @export
 vff_make = function(bam, vcf, barcodes=NULL, folder=NULL, nthreads=16){
     args = c(
         file.path(find.package("phyloRNA"), "vff_make.py"),
         bam, vcf,
-        "--pass_only"
+        "--pass_only",
         "--nthreads", nthreads
         )
 
