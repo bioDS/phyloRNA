@@ -36,8 +36,8 @@ def parse_args():
 class SharedManager(BaseManager):
     pass
 
-SharedManager.register("AlignmentFile", pysam.AlignmentFile)
-SharedManager.register("VariantFile", pysam.VariantFile)
+SharedManager.register("AlignmentFile", pysam.AlignmentFile, exposed=['__enter__', '__exit__'])
+SharedManager.register("VariantFile", pysam.VariantFile, exposed=['__enter__', '__exit__'])
 
 def main(
         bam,
