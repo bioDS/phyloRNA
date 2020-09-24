@@ -7,7 +7,9 @@ import collections
 import argparse
 from functools import partial
 from multiprocessing import Pool
+from multiprocessing.managers import BaseManager
 import pysam
+
 
 def parse_args():
     """Parse command line arguments"""
@@ -31,6 +33,12 @@ def parse_args():
     return args
 
 
+class SharedManager(BaseManager):
+    pass
+
+SharedManager.register("AlignmentFile", pysam.AlignmentFile)
+SharedManager.register("VariantFile", pysam.VariantFile)
+
 def main(
         bam,
         vcf,
@@ -49,8 +57,11 @@ def main(
         vff = vff_path(".", os.path.splitext(bam)[0])
     mkdir(folder)
 
-    with pysam.AlignmentFile(bam, "rb") as bamfile, \
-        pysam.VariantFile(vcf, "rb") as vcfile:
+    manager = SharedManager()
+    manager.start()
+
+    with manager.AlignmentFile(bam, "rb") as bamfile, \
+        manager.VariantFile(vcf, "rb") as vcfile:
 
         if barcode:
             process_barcode(barcode, bamfile, vcfile, folder, pass_only)
