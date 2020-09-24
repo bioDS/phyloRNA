@@ -7,7 +7,6 @@ import collections
 import argparse
 from functools import partial
 from multiprocessing import Pool
-from multiprocessing.managers import BaseManager
 import pysam
 
 
@@ -32,12 +31,8 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
-class SharedManager(BaseManager):
-    pass
-
-SharedManager.register("AlignmentFile", pysam.AlignmentFile, exposed=['__enter__', '__exit__'])
-SharedManager.register("VariantFile", pysam.VariantFile, exposed=['__enter__', '__exit__'])
+Paths = collections.namedtuple("Paths", "bam vcf folder")
+Settings = collections.namedtuple("Settings", "pass_only remake message")
 
 def main(
         bam,
@@ -53,36 +48,29 @@ def main(
     # pylint: disable=too-many-arguments,missing-docstring
     if folder is None:
         folder = os.path.abspath(os.path.splitext(bam)[0])
-    if vff is None:
-        vff = vff_path(".", os.path.splitext(bam)[0])
+
     mkdir(folder)
+    paths = Paths(bam, vcf, folder)
+    settings = Settings(pass_only, remake, True)
 
-    manager = SharedManager()
-    manager.start()
+    if barcode:
+        process_barcode(barcode, paths, settings)
 
-    with manager.AlignmentFile(bam, "rb") as bamfile, \
-        manager.VariantFile(vcf, "rb") as vcfile:
 
-        if barcode:
-            process_barcode(barcode, bamfile, vcfile, folder, pass_only)
+    elif barcodes:
+        barcodes = read_barcodes(barcodes)
+        process_barcode_partial = partial(
+            process_barcode,
+            paths=paths,
+            settings=settings
+            )
+        with Pool(nthreads) as pool:
+            pool.map(process_barcode_partial, barcodes)
 
-        elif barcodes:
-            barcodes = read_barcodes(barcodes)
-            process_barcode_partial = partial(
-                process_barcode,
-                bamfile=bamfile,
-                vcfile=vcfile,
-                folder=folder,
-                pass_only=pass_only,
-                message=True,
-                remake=remake
-                )
-            with Pool(nthreads) as pool:
-                pool.map(process_barcode_partial, barcodes)
-
-        else:
-            if remake or not os.path.isfile(vff):
-                make_vff(vff, bamfile, vcfile, pass_only)
+    else:
+        vff = vff_path(folder, os.path.splitext(bam)[0])
+        if remake or not os.path.isfile(vff):
+            make_vff(vff, bam, vcf, pass_only)
 
 
 def read_barcodes(barcodes):
@@ -94,18 +82,20 @@ def read_barcodes(barcodes):
 
 
 
-def process_barcode(barcode, bamfile, vcfile, folder, pass_only=True, message=False, remake=False):
+def process_barcode(barcode, paths, settings):
     """Process barcode (cell) and create variant frequency file"""
-    vff = vff_path(folder, barcode)
-    if remake or not os.path.isfile(vff):
-        if message:
+    vff = vff_path(paths.folder, barcode)
+    if settings.remake or not os.path.isfile(vff):
+        if settings.message:
             print("Processing barcode: ", barcode)
-        make_vff(vff, bamfile, vcfile, pass_only, barcode)
+        make_vff(vff, paths.bam, paths.vcf, settings.pass_only, barcode)
 
 
-def make_vff(filename, bamfile, vcfile, pass_only=True, barcode=None):
-    """Write a Variant Frequency File using a BAM and VCF file handles"""
-    with open(filename, "wt")  as vffile:
+def make_vff(vff, bam, vcf, pass_only=True, barcode=None):
+    """Make a Variant Frequency File"""
+    with pysam.AlignmentFile(bam, "rb", duplicate_filehandle=True) as bamfile, \
+        pysam.VariantFile(vcf, "rb", duplicate_filehandle=True) as vcfile, \
+        open(vff, "wt")  as vffile:
         vffile.write(vff_header())
         process_variants(vffile, bamfile, vcfile, barcode=barcode, pass_only=pass_only)
 
