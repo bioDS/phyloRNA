@@ -8,6 +8,7 @@ import argparse
 from functools import partial
 from multiprocessing import Pool
 import pysam
+import pickle
 
 def parse_args():
     """Parse command line arguments"""
@@ -57,10 +58,13 @@ def main(
 
         elif barcodes:
             barcodes = read_barcodes(barcodes)
+            bampickle = pickle.dumps(bamfile)
+            vcfpickle = pickle.dumps(vcfile)
+
             process_barcode_partial = partial(
-                process_barcode,
-                bamfile=bamfile,
-                vcfile=vcfile,
+                process_barcode_pickle,
+                bampickle=bampickle,
+                vcfpickle=vcfpickle,
                 folder=folder,
                 pass_only=pass_only,
                 message=True,
@@ -82,6 +86,15 @@ def read_barcodes(barcodes):
     return text
 
 
+def process_barcode_pickle(
+        barcode, bampickle, vcfpickle, 
+        folder, pass_only=True, message=False, remake=False):
+    """Process barcode with pickled objects"""
+    bamfile = pickle.loads(bampickle)
+    vcfile = pickle.loads(vcfpickle)
+    process_barcode(
+        barcode, bamfile, vcfile, folder, pass_only=pass_only, message=message, remake=remake
+        )
 
 def process_barcode(barcode, bamfile, vcfile, folder, pass_only=True, message=False, remake=False):
     """Process barcode (cell) and create variant frequency file"""
