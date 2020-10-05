@@ -5,6 +5,7 @@ import os
 import sys
 import collections
 import argparse
+import textwrap
 import itertools
 from functools import partial
 from multiprocessing import Pool
@@ -14,9 +15,20 @@ import pysam
 def parse_args():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(
-        description=("Create a Variant Call Matrix (VFM) by retaining the most frequent base"
-                     " of reads for each cell contained in a BAM file and at the position"
-                     " of detected variants contained in the VCF file.")
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=textwrap.dedent("""\
+            Create a Variant Call Matrix (vcm) by retaining the most frequent base of
+            reads for each cell contained in a bam file and at the position of detected variants
+            contained in the vcf file.
+            
+            This script reads a vcf file and then distribute the variants among the processes.
+            The varchunk, chunksize, adaptive and factor are parameters that govern how will
+            this distribution take place (see description of these parameters for more detail).
+            As scRNAseq are notoriously patchy, variants can take highly varied time dependent
+            on a number of reads mapped to that particular place. For this reason, the default
+            values should provide the best performance. However, there might be situations
+            where their modification would be beneficial.
+            """)
         )
     parser.add_argument("bam", type=str, help="A sam or a bam file that will be parsed")
     parser.add_argument("vcf", type=str, help="A variant calling file to be summarized")
@@ -28,17 +40,22 @@ def parse_args():
                         help="A minimum coverage for a position to not be considered unknown")
     parser.add_argument("--nthreads", type=intplus, default=4,
                         help="Number of threads (or processes to be precise) to run in paralell")
-    parser.add_argument("--varchunk", type=intplus, default=10000,
-                        help=("The number of variants processed each iteration."
-                              " The larger this number is, the more variants are processed at once"
-                              " and distributed among processes. This should reduce overhead and"
-                              " guarantee that there is enough data to send around as not all"
-                              " variants might pass filters. However, this also means"
-                              " that more information have to be hold in memory and written"
-                              " to a file at once"))
+    parser.add_argument("--varchunk", type=intplus,
+                        help="""\
+        By default, the whole vcf file is processed at once.
+        Alternatively, this parameter can be specified to iterate over the vcf file and read
+        and process only a limited number of variants at once. This shouldl improve the performance
+        with a huge amount of cells as it decrease the size of the text that is being written
+        in a file. However, this can also decrease performance if a small number of variants
+        take a long time to process as other processes would wait for these.
+        """)
     parser.add_argument("--chunksize", type=intplus, default=1,
-                        help=("Number of variants assigned to a process during each iteration."
-                              " Larger number reduce overhead but make scheduling harder."))
+                        help="""\
+        Number of variants assigned to a process at once. The variants can be divided into
+        equally sized chunks that are then distributed among processes. Ideally, if the time to
+        process each variant is the same, a larger chunks should be assigned as this reduce
+        multiprocessing overhead. As this is not guranteed for the scRNAseq, only a single
+        variant is send to a process at once.""")
     parser.add_argument("--adaptive", action="store_true", default=False,
                         help=("Use an adaptive chunksize calculation. The adaptive approach"
                               " calculates chunksize for each subset of variants that passed"
@@ -58,14 +75,14 @@ def parse_args():
 
 
 Variant = collections.namedtuple("Variant", "contig, pos, ref, start, stop")
-
+Read = collections.namedtuple("Read", "cb, aligned_pairs, query_sequence")
 
 def main():
     """The main loop"""
     args = parse_args()
 
     if not args.output:
-        args.output = vfm_path(args.bam, ".")
+        args.output = vcm_path(args.bam, ".")
     if not args.remake and os.path.isfile(args.output):
         print(f"File {args.output} already exists.")
         return
@@ -74,10 +91,10 @@ def main():
     index_bam(args.bam, args.nthreads)
 
     with pysam.VariantFile(args.vcf, "rb", duplicate_filehandle=True) as vcfile, \
-        open(args.output, "wt") as vfmfile, \
+        open(args.output, "wt") as vcmfile, \
         Pool(args.nthreads, initializer=init_alignment_file, initargs=[args.bam]) as pool:
 
-        vfmfile.write(vfm_header(barcodes))
+        vcmfile.write(vcm_header(barcodes))
         variants_iter = vcfile.fetch()
 
         process_variant_partial = partial(
@@ -89,7 +106,6 @@ def main():
         while True:
             variants = itertools.islice(variants_iter, args.varchunk)
             variants = list(variants)
-
 
             if not variants:
                 break # vcf exhausted
@@ -105,7 +121,7 @@ def main():
             variants = map(variant2tuple, variants)
 
             lines = pool.imap(process_variant_partial, variants, chunksize=args.chunksize)
-            vfmfile.writelines(lines)
+            vcmfile.writelines(lines)
 
 
 def intplus(value):
@@ -127,9 +143,9 @@ def process_variant(variant, barcodes, min_coverage=0):
     A a global variable BAMFILE of type pysam.AlignmentFile, must be defined!
     """
     reads = BAMFILE.fetch(variant.contig, variant.start, variant.stop)
-    reads = list(reads)
+    reads = [read2tuple(read) for read in reads if read.has_tag("CB")]
     bases = [process_barcode(barcode, reads, variant, min_coverage) for barcode in barcodes]
-    line = vfm_line(variant, bases)
+    line = vcm_line(variant, bases)
     return line
 
 
@@ -158,6 +174,17 @@ def variant2tuple(variant):
     prevents this issue.
     """
     return Variant(variant.contig, variant.pos, variant.ref, variant.start, variant.stop)
+
+
+def read2tuple(read):
+    """
+    Convert a pysam.AlignedSegment into a named tuple.
+
+    This conversion is required to speed up the computation as accessing
+    information from a pysam.AlignedSegment is IO bound operation.
+    This slows down significantly multiprocessing operation.
+    """
+    return Read(read.get_tag("CB"), read.get_aligned_pairs(), read.query_sequence)
 
 
 def calculate_chunksize(n_workers, len_iterable, factor=4):
@@ -194,7 +221,7 @@ def passed_filter(variant):
 
 def get_reads_with_barcode(reads, barcode):
     """Filter reads according to their barcode"""
-    return [read for read in reads if (read.has_tag("CB") and read.get_tag("CB") == barcode)]
+    return [read for read in reads if read.cb == barcode]
 
 
 def get_most_common_base(reads, variant, unknown="N", min_coverage=0):
@@ -221,31 +248,31 @@ def get_most_common_base(reads, variant, unknown="N", min_coverage=0):
 
 def get_base(read, position):
     """Get bases at certain position from selected reads"""
-    for pair in read.get_aligned_pairs():
+    for pair in read.aligned_pairs:
         if pair[1] == position:
             return read.query_sequence[pair[0]] if pair[0] is not None else None
 
-    sys.stderr.write(read_to_text(read))
+    sys.stderr.write(read)
     raise VariantReadError("Position was not found in the read. This shouldn't happen!")
 
 
-def vfm_path(filepath, folder=None):
+def vcm_path(filepath, folder=None):
     """Construct a Variant Frequency File path based on an input name"""
     path = os.path.splitext(filepath)[0]
     if folder:
         path = os.path.basename(path)
         path = os.path.join(folder, path)
-    path = os.path.abspath(path + ".vfm")
+    path = os.path.abspath(path + ".vcm")
     return path
 
 
-def vfm_line(variant, bases):
+def vcm_line(variant, bases):
     """Construct a Variant Call Matrix line"""
     bstring = "\t".join(bases)
     return f"{variant.contig}\t{variant.pos}\t{variant.ref}\t{bstring}\n"
 
 
-def vfm_header(barcodes):
+def vcm_header(barcodes):
     """Construct a Variant Frequency File header"""
     bstring = "\t".join(barcodes)
     return f"Contig\tPosition\tReference\t{bstring}\n"
@@ -255,15 +282,6 @@ def variant_to_text(variant):
     """Collect relevant details of variant into text string"""
     text = ("Variant (contig, start, stop, position, ref, value):\n"
             f"{variant.contig} {variant.start} {variant.stop} {variant.pos} {variant.ref}\n")
-    return text
-
-
-def read_to_text(read):
-    """Collect relevant details of read into text string"""
-    text = ("Read (contig, from, to):\n"
-            f"{read.reference_name} {read.reference_start} {read.reference_end}\n"
-            f"Pairs: {read.get_aligned_pairs()}\n"
-            f"Sequence: {read.query_sequence}\n")
     return text
 
 
