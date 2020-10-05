@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Create a Variant Frequency File (VFF) by calculating the base frequency of reads contained in a
-BAM file at positions the positions of detected variants contained in the VCF file."""
+"""Create a Variant Call Matrix (VFM) by retaining the most frequent base of reads for each cell
+contained in a BAM file and at the position of detected variants contained in the VCF file."""
 import os
 import sys
 import collections
 import argparse
+import itertools
 from functools import partial
 from multiprocessing import Pool
 import pysam
@@ -13,64 +14,166 @@ import pysam
 def parse_args():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(
-        description=("Create a Variant Frequency File (VFF) by calculating the base frequency"
-                     "of reads in BAM file at positions contained in the VCF file.")
+        description=("Create a Variant Call Matrix (VFM) by retaining the most frequent base"
+                     " of reads for each cell contained in a BAM file and at the position"
+                     " of detected variants contained in the VCF file.")
         )
-    parser.add_argument("bam", type=str, help="SAM or BAM file that will be parsed")
-    parser.add_argument("vcf", type=str, help="A variatn calling file to be summarized")
-    parser.add_argument("--folder", type=str, help="Folder with output VFF file for each barcode")
-    parser.add_argument("--vff", type=str, help="An output VFF file, in case barcodes are not used")
-    parser.add_argument("--pass_only", action="store_true",
-                        help="Filter the VCF so only PASSed variants are considered")
-    parser.add_argument("--nthreads", type=int, help="Number of threads to run in paralell")
-    parser.add_argument("--remake", action="store_true",
+    parser.add_argument("bam", type=str, help="A sam or a bam file that will be parsed")
+    parser.add_argument("vcf", type=str, help="A variant calling file to be summarized")
+    parser.add_argument("barcodes", type=str, help="File with barcodes")
+    parser.add_argument("--vcm", type=str,
+                        help=("An output file. If not specified, a `<bam>.vcm` in a current"
+                              " directory is used"))
+    parser.add_argument("--nthreads", type=intplus, default=4,
+                        help="Number of threads (or processes to be precise) to run in paralell")
+    parser.add_argument("--varchunk", type=intplus, default=10000,
+                        help=("The number of variants processed each iteration."
+                              " The larger this number is, the more variants are processed at once"
+                              " and distributed among processes. This should reduce overhead and"
+                              " gurantee that there is enough data to send around as not all"
+                              " variants might pass filters. However, this also means"
+                              " that more information have to be hold in memory and written"
+                              " to a file at once"))
+    parser.add_argument("--chunksize", type=intplus, default=1,
+                        help=("Number of variants assigned to a process during each iteration."
+                              " Larger number reduce overhead but make scheduling harder."))
+    parser.add_argument("--adaptive", action="store_true", default=False,
+                        help=("Use an adaptive chunksize calculation. The adaptive approach"
+                              " calculates chunksize for each subset of variants that passed"
+                              " the filter. This gurantee that the data are always divided"
+                              " among the processes equally."))
+    parser.add_argument("--factor", type=intplus, default=4,
+                        help=("If an adaptive chunksize is chosen, the variants that passed"
+                              " the filter are divided into a factor*nthreads equally sized"
+                              " subsets. Larger factor trades a smaller overhead for a potential"
+                              " scheduling problems."))
+    parser.add_argument("--remake", action="store_true", default=False,
                         help="Remake files if they already exists.")
-    group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument("--barcodes", type=str, help="File with barcodes")
-    group.add_argument("--barcode", type=str, help="Pass only a single barcode")
+    parser.add_argument("--message", action="store_true", default=False,
+                        help="Print a progress message")
     args = parser.parse_args()
     return args
 
-Paths = collections.namedtuple("Paths", "bam vcf folder")
-Settings = collections.namedtuple("Settings", "pass_only remake message")
 
-def main(
-        bam,
-        vcf,
-        folder=None,
-        vff=None,
-        pass_only=True,
-        barcodes=None,
-        barcode=None,
-        nthreads=None,
-        remake=False):
-    # TODO: too many arguments? Maybe there is a better way to handle this?
-    # pylint: disable=too-many-arguments,missing-docstring
-    if folder is None:
-        folder = os.path.abspath(os.path.splitext(bam)[0])
-
-    mkdir(folder)
-    paths = Paths(bam, vcf, folder)
-    settings = Settings(pass_only, remake, True)
-
-    if barcode:
-        process_barcode(barcode, paths, settings)
+Variant = collections.namedtuple("Variant", "contig, pos, ref, start, stop")
 
 
-    elif barcodes:
-        barcodes = read_barcodes(barcodes)
-        process_barcode_partial = partial(
-            process_barcode,
-            paths=paths,
-            settings=settings
+def main():
+    """The main loop"""
+    args = parse_args()
+
+    if not args.vfm:
+        args.vfm = vfm_path(args.bam, ".")
+    if not args.remake and os.path.isfile(args.vfm):
+        print(f"File {args.bam} already exists.")
+        return
+
+    barcodes = read_barcodes(args.barcodes)
+    index_bam(args.bam, args.nthreads)
+
+    with pysam.VariantFile(args.vcf, "rb", duplicate_filehandle=True) as vcfile, \
+        open(args.vfm, "wt") as vfmfile, \
+        Pool(args.nthreads, initializer=init_alignment_file, initargs=[args.bam]) as pool:
+
+        vfmile.write(vfm_header(barcodes))
+        variants_iter = vcfile.fetch()
+
+        process_variant_partial = partial(
+            process_variant,
+            barcodes=barcodes
             )
-        with Pool(nthreads) as pool:
-            pool.map(process_barcode_partial, barcodes)
 
-    else:
-        vff = vff_path(folder, os.path.splitext(bam)[0])
-        if remake or not os.path.isfile(vff):
-            make_vff(vff, bam, vcf, pass_only)
+        while True:
+            variants = itertools.islice(variants_iter, args.varchunk)
+            variants = list(variants)
+
+
+            if not variants:
+                break # vcf exhausted
+
+            if args.adaptive:
+                args.chunksize = calculate_chunksize(args.nthreads, len(variants))
+
+            if args.message:
+                print(f"Processing variants: {variants[0].contig}:{variants[0].pos}"
+                      f" to {variants[-1].contig}:{variants[-1].pos}")
+
+            variants = filter(passed_filter, variants)
+            variants = map(variant2tuple, variants)
+
+            lines = pool.imap(process_variant_partial, variants, chunksize=args.chunksize)
+            vfmfile.writelines(lines)
+
+
+def intplus(value):
+    """
+    Raises an argparse.ArgumentTypeError if the argument is not a strictly positive integer.
+
+    The main use of this function is as an argparse type for parameter parsing.
+    """
+    ivalue = int(value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError(f"{value} is not a strictly positive integer!")
+    return ivalue
+
+
+def process_variant(variant, barcodes):
+    """
+    Process a variant for all barcodes.
+
+    A a global variable BAMFILE of type pysam.AlignmentFile, must be defined!
+    """
+    reads = BAMFILE.fetch(variant.contig, variant.start, variant.stop)
+    reads = list(reads)
+    bases = [process_barcode(barcode, reads, variant) for barcode in barcodes]
+    line = vfm_line(variant, bases)
+    return line
+
+
+def index_bam(bam, nthreads):
+    """Index BAM file."""
+    index = bam + ".bai"
+    if not os.path.isfile(index):
+        pysam.index(bam, "-@", str(nthreads))
+
+
+def init_alignment_file(bam):
+    """
+    Initialize a global variable BAMFILE as a pointer a pysam.AlignmentFile
+    which is opened.
+    """
+    global BAMFILE
+    BAMFILE = pysam.AlignmentFile(bam, "rb", duplicate_filehandle=True)
+
+
+def variant2tuple(variant):
+    """
+    Convert a pysam.VariantRecord into a named tuple.
+
+    This conversion is required as the pysam.VariantRecord is an unpickable c-type, which means
+    that it cannot be send over to a child process from the main one. Converting to a named tuple
+    prevents this issue.
+    """
+    return Variant(variant.contig, variant.pos, variant.ref, variant.start, variant.stop)
+
+
+def calculate_chunksize(n_workers, len_iterable, factor=4):
+    """
+    Calculate chunksize argument for Pool-methods.
+
+    Resembles source-code within `multiprocessing.pool.Pool._map_async`.
+    """
+    chunksize, extra = divmod(len_iterable, n_workers * factor)
+    if extra:
+        chunksize += 1
+    return chunksize
+
+
+def process_barcode(barcode, reads, variant):
+    """Get the most frequent base for a barcode given reads and variant."""
+    reads = get_reads_with_barcode(reads, barcode)
+    base = get_most_common_base(reads, variant)
+    return base
 
 
 def read_barcodes(barcodes):
@@ -79,42 +182,6 @@ def read_barcodes(barcodes):
         text = file.readlines()
     text = [line.rstrip("\n") for line in text]
     return text
-
-
-
-def process_barcode(barcode, paths, settings):
-    """Process barcode (cell) and create variant frequency file"""
-    vff = vff_path(paths.folder, barcode)
-    if settings.remake or not os.path.isfile(vff):
-        if settings.message:
-            print("Processing barcode: ", barcode)
-        make_vff(vff, paths.bam, paths.vcf, settings.pass_only, barcode)
-
-
-def make_vff(vff, bam, vcf, pass_only=True, barcode=None):
-    """Make a Variant Frequency File"""
-    with pysam.AlignmentFile(bam, "rb", duplicate_filehandle=True) as bamfile, \
-        pysam.VariantFile(vcf, "rb", duplicate_filehandle=True) as vcfile, \
-        open(vff, "wt")  as vffile:
-        vffile.write(vff_header())
-        process_variants(vffile, bamfile, vcfile, barcode=barcode, pass_only=pass_only)
-
-
-def process_variants(vffile, bamfile, vcfile, pass_only=True, barcode=None):
-    """Process VCF variants"""
-    for variant in vcfile.fetch(reopen=True):
-        if pass_only and not passed_filter(variant):
-            continue
-        # pysam has 0-based indexing
-        # VCF file is 1-based indexing (variant.pos)
-        # variant.start is the correct position of variant in 0-based indexing
-        # Note that with fetch, both start and end must be provided
-        reads = bamfile.fetch(variant.contig, variant.start, variant.stop, multiple_iterators=True)
-        reads = [read for read in reads]
-        if barcode:
-            reads = get_reads_with_barcode(reads, barcode)
-        frequencies = get_base_frequencies_for_variant(reads, variant)
-        vffile.write(vff_line(variant, frequencies))
 
 
 def passed_filter(variant):
@@ -126,27 +193,26 @@ def get_reads_with_barcode(reads, barcode):
     """Filter reads according to their barcode"""
     return [read for read in reads if (read.has_tag("CB") and read.get_tag("CB") == barcode)]
 
-def get_base_frequencies_for_variant(reads, variant, bases="ACGT"):
-    """Calculate the base frequency for variant for selected reads"""
-    # According to pyling, the function name doesn't confirm to the snake-case.
-    # I disagree.
-    # pylint: disable=invalid-name
+
+def get_most_common_base(reads, variant, unknown="N"):
+    """Calculate the most common base"""
     try:
-        read_bases = [get_bases(read, variant.start) for read in reads]
+        bases = [get_base(read, variant.start) for read in reads]
     except VariantReadError as error:
         sys.stderr.write(variant_to_text(variant))
         raise error
-    frequencies = empty_counter(bases)
-    frequencies.update(read_bases)
-    return frequencies
+    frequencies = collections.Counter(bases)
+    if not frequencies:
+        return unknown
+    most_common = frequencies.most_common(2)
+    if most_common[0][0]:
+        return most_common[0][0]
+    if len(most_common) == 1:
+        return unknown
+    return most_common[1][0]
 
 
-def empty_counter(bases="ACGT"):
-    """Initialize an empty counter with particular items"""
-    return collections.Counter(dict.fromkeys(bases, 0))
-
-
-def get_bases(read, position):
+def get_base(read, position):
     """Get bases at certain position from selected reads"""
     for pair in read.get_aligned_pairs():
         if pair[1] == position:
@@ -156,37 +222,32 @@ def get_bases(read, position):
     raise VariantReadError("Position was not found in the read. This shouldn't happen!")
 
 
-def vff_base_frequency_string(bases, frequencies):
-    """Construct a string of base frequencies for VFF file"""
-    freqlist = [frequencies[base] for base in bases]
-    freqlist.append(sum(frequencies.values()))
-    return "\t".join(map(str, freqlist))
-
-
-def vff_path(folder, name):
-    """Construct a Variant Frequency File path"""
-    path = os.path.join(folder, name) + ".vff"
-    path = os.path.abspath(path)
+def vfm_path(filepath, folder=None):
+    """Construct a Variant Frequency File path based on an input name"""
+    path = os.path.splitext(filepath)[0]
+    if folder:
+        path = os.path.basename(path)
+        path = os.path.join(folder, path)
+    path = os.path.abspath(path + ".vfm")
     return path
 
 
-def vff_line(variant, frequencies, bases="ACGT"):
-    """Construct a Variant Frequency File line"""
-    bstring = vff_base_frequency_string(bases, frequencies)
+def vfm_line(variant, bases):
+    """Construct a Variant Call Matrix line"""
+    bstring = "\t".join(bases)
     return f"{variant.contig}\t{variant.pos}\t{variant.ref}\t{bstring}\n"
 
 
-def vff_header(bases="ACTG"):
+def vfm_header(barcodes):
     """Construct a Variant Frequency File header"""
-    bstring = "\t".join(bases)
-    return f"Contig\tPosition\tReference\t{bstring}\tTotal\n"
+    bstring = "\t".join(barcodes)
+    return f"Contig\tPosition\tReference\t{bstring}\n"
 
 
 def variant_to_text(variant):
     """Collect relevant details of variant into text string"""
-    alts = "".join(variant.alts)
     text = ("Variant (contig, start, stop, position, ref, value):\n"
-            f"{variant.contig} {variant.start} {variant.stop} {variant.pos} {variant.ref} {alts}\n")
+            f"{variant.contig} {variant.start} {variant.stop} {variant.pos} {variant.ref}\n")
     return text
 
 
@@ -211,5 +272,4 @@ class VariantReadError(ValueError):
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    main(**vars(args))
+    main()
