@@ -1,1 +1,1 @@
-#' @param nthreads a number of threads to run on
+#' @param nthreads **optional** a number of threads to run on
