@@ -33,7 +33,7 @@
 #' @export
 vfm = function(
     bam, vcf, barcodes,
-    output=NULL, min_coverage=0
+    output=NULL, min_coverage=0,
     nthreads=16, varchunk=1000, chunksize=1,
     adaptive=FALSE, factor=4,
     remake=FALSE, message=FALSE){

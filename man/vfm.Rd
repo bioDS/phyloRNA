@@ -9,6 +9,7 @@ vfm(
   vcf,
   barcodes,
   output = NULL,
+  min_coverage = 0,
   nthreads = 16,
   varchunk = 1000,
   chunksize = 1,
@@ -27,6 +28,9 @@ vfm(
 
 \item{output}{**optional an output file. If not specified \verb{<bam>.vcm} in a current directory
 is used.}
+
+\item{min_coverage}{\strong{optional} a minimum coverage for a position to not be considered
+unknown data}
 
 \item{nthreads}{\strong{optional} a number of threads to run on}
 
