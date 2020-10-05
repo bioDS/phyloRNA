@@ -24,6 +24,8 @@ def parse_args():
     parser.add_argument("--output", type=str,
                         help=("An output file. If not specified, a `<bam>.vcm` in a current"
                               " directory is used"))
+    parser.add_argument("--min_coverage", type=int, default=0,
+                        help="A minimum coverage for a position to not be considered unknown")
     parser.add_argument("--nthreads", type=intplus, default=4,
                         help="Number of threads (or processes to be precise) to run in paralell")
     parser.add_argument("--varchunk", type=intplus, default=10000,
@@ -80,7 +82,8 @@ def main():
 
         process_variant_partial = partial(
             process_variant,
-            barcodes=barcodes
+            barcodes=barcodes,
+            min_coverage=args.min_coverage
             )
 
         while True:
@@ -117,7 +120,7 @@ def intplus(value):
     return ivalue
 
 
-def process_variant(variant, barcodes):
+def process_variant(variant, barcodes, min_coverage=0):
     """
     Process a variant for all barcodes.
 
@@ -125,7 +128,7 @@ def process_variant(variant, barcodes):
     """
     reads = BAMFILE.fetch(variant.contig, variant.start, variant.stop)
     reads = list(reads)
-    bases = [process_barcode(barcode, reads, variant) for barcode in barcodes]
+    bases = [process_barcode(barcode, reads, variant, min_coverage) for barcode in barcodes]
     line = vfm_line(variant, bases)
     return line
 
@@ -169,10 +172,10 @@ def calculate_chunksize(n_workers, len_iterable, factor=4):
     return chunksize
 
 
-def process_barcode(barcode, reads, variant):
+def process_barcode(barcode, reads, variant, min_coverage=0):
     """Get the most frequent base for a barcode given reads and variant."""
     reads = get_reads_with_barcode(reads, barcode)
-    base = get_most_common_base(reads, variant)
+    base = get_most_common_base(reads, variant, min_coverage=min_coverage)
     return base
 
 
@@ -194,16 +197,20 @@ def get_reads_with_barcode(reads, barcode):
     return [read for read in reads if (read.has_tag("CB") and read.get_tag("CB") == barcode)]
 
 
-def get_most_common_base(reads, variant, unknown="N"):
+def get_most_common_base(reads, variant, unknown="N", min_coverage=0):
     """Calculate the most common base"""
     try:
         bases = [get_base(read, variant.start) for read in reads]
     except VariantReadError as error:
         sys.stderr.write(variant_to_text(variant))
         raise error
+    if len(bases) < min_coverage:
+        return unknown
+
     frequencies = collections.Counter(bases)
     if not frequencies:
         return unknown
+
     most_common = frequencies.most_common(2)
     if most_common[0][0]:
         return most_common[0][0]

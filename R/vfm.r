@@ -14,6 +14,8 @@
 #' @param barcodes a barcode file
 #' @param output **optional an output file. If not specified `<bam>.vcm` in a current directory
 #' is used.
+#' @param min_coverage **optional** a minimum coverage for a position to not be considered
+#' unknown data
 #' @param varchunk **optional** a number of variants processed each iteration. The larger this
 #' number is, the more variants are processed at once and distributed among processes. This should
 #' reduce multiprocessing overhead and guarantee that there is enough data to send around as not
@@ -30,12 +32,15 @@
 #' @param message **optional** Print a progress mesage.
 #' @export
 vfm = function(
-    bam, vcf, barcodes, output=NULL, nthreads=16,
-    varchunk=1000, chunksize=1, adaptive=FALSE, factor=4,
+    bam, vcf, barcodes,
+    output=NULL, min_coverage=0
+    nthreads=16, varchunk=1000, chunksize=1,
+    adaptive=FALSE, factor=4,
     remake=FALSE, message=FALSE){
     args = c(
         file.path(find.package("phyloRNA"), "vcm.py"),
         bam, vcf, barcodes,
+        "--min_coverage", min_coverage,
         "--nthreads", nthreads,
         "--varchunk", varchunk,
         "--chunksize", chunksize,
