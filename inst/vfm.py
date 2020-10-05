@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument("bam", type=str, help="A sam or a bam file that will be parsed")
     parser.add_argument("vcf", type=str, help="A variant calling file to be summarized")
     parser.add_argument("barcodes", type=str, help="File with barcodes")
-    parser.add_argument("--vcm", type=str,
+    parser.add_argument("--output", type=str,
                         help=("An output file. If not specified, a `<bam>.vcm` in a current"
                               " directory is used"))
     parser.add_argument("--nthreads", type=intplus, default=4,
@@ -30,7 +30,7 @@ def parse_args():
                         help=("The number of variants processed each iteration."
                               " The larger this number is, the more variants are processed at once"
                               " and distributed among processes. This should reduce overhead and"
-                              " gurantee that there is enough data to send around as not all"
+                              " guarantee that there is enough data to send around as not all"
                               " variants might pass filters. However, this also means"
                               " that more information have to be hold in memory and written"
                               " to a file at once"))
@@ -40,7 +40,7 @@ def parse_args():
     parser.add_argument("--adaptive", action="store_true", default=False,
                         help=("Use an adaptive chunksize calculation. The adaptive approach"
                               " calculates chunksize for each subset of variants that passed"
-                              " the filter. This gurantee that the data are always divided"
+                              " the filter. This guarantee that the data are always divided"
                               " among the processes equally."))
     parser.add_argument("--factor", type=intplus, default=4,
                         help=("If an adaptive chunksize is chosen, the variants that passed"
@@ -62,20 +62,20 @@ def main():
     """The main loop"""
     args = parse_args()
 
-    if not args.vfm:
-        args.vfm = vfm_path(args.bam, ".")
-    if not args.remake and os.path.isfile(args.vfm):
-        print(f"File {args.bam} already exists.")
+    if not args.output:
+        args.output = vfm_path(args.bam, ".")
+    if not args.remake and os.path.isfile(args.output):
+        print(f"File {args.output} already exists.")
         return
 
     barcodes = read_barcodes(args.barcodes)
     index_bam(args.bam, args.nthreads)
 
     with pysam.VariantFile(args.vcf, "rb", duplicate_filehandle=True) as vcfile, \
-        open(args.vfm, "wt") as vfmfile, \
+        open(args.output, "wt") as vfmfile, \
         Pool(args.nthreads, initializer=init_alignment_file, initargs=[args.bam]) as pool:
 
-        vfmile.write(vfm_header(barcodes))
+        vfmfile.write(vfm_header(barcodes))
         variants_iter = vcfile.fetch()
 
         process_variant_partial = partial(
