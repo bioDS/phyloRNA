@@ -75,7 +75,7 @@ Create a new GATK object
 
 \item{\code{outdir}}{\strong{optional} an output directory}
 
-\item{\code{remake}}{whether to remake the output if it already exists}
+\item{\code{remake}}{\strong{optional} remake the output if it already exists}
 }
 \if{html}{\out{</div>}}
 }

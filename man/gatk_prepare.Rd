@@ -27,7 +27,7 @@ gatk_prepare(
 
 \item{outdir}{\strong{optional} an output directory for intermediate files}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Prepare sam/bam file from scRNAseq according to GATK best practices for further analysis,

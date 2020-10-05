@@ -11,7 +11,7 @@ vcftools_filter(input, output, remake = FALSE)
 
 \item{output}{an output VCF file}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Filter a VCF file using the external \code{vcftools} software, removing indels and keeping

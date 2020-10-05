@@ -22,9 +22,9 @@ cellranger_count(
 
 \item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
 
-\item{nthreads}{a number of threads to run on}
+\item{nthreads}{\strong{optional} a number of threads to run on}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Perform mapping, cell estimation, filtering and gene expression analysis using the Cellranger

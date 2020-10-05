@@ -13,9 +13,9 @@ cellranger_mkref(reference, annotation, outdir, nthreads = 4, remake = FALSE)
 
 \item{outdir}{a non-existing output directory, see details}
 
-\item{nthreads}{a number of threads to run on}
+\item{nthreads}{\strong{optional} a number of threads to run on}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Run \verb{cellranger mkref} and generate the Cellranger Transcriptome Reference Genome.

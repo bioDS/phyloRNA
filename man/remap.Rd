@@ -34,11 +34,11 @@ remap(
 
 \item{countdir}{\strong{optional} a directory for the \link{cellranger_count}, see details}
 
-\item{nthreads}{a number of threads to run on}
+\item{nthreads}{\strong{optional} a number of threads to run on}
 
 \item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 
 \item{cbam}{\strong{optional} a TRUE value or file path to a location where the re-mapped bam file
 will be copied}

@@ -15,7 +15,7 @@ gatk_snv(input, reference, output, outdir = NULL, remake = FALSE)
 
 \item{outdir}{\strong{optional} an output directory for intermediate files}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Identify and filter single nucleotide variations in an input bam file.

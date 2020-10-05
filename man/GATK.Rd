@@ -42,7 +42,7 @@ gatk_FilterMutectCalls(input, reference, output, remake = FALSE)
 
 \item{output}{an output sam/bam or vcf file (in case of Mutect2 calls)}
 
-\item{remake}{whether to remake the output if it already exists}
+\item{remake}{\strong{optional} remake the output if it already exists}
 
 \item{reference}{a reference fasta (\code{.fas}) file to which the sam/bam file was mapped}
 
