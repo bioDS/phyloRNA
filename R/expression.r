@@ -2,9 +2,18 @@
 #'
 #' A group of functions, often lifted and modified from the Seurat package for manipulation with the 10X scRNAseq data.
 #'
-#' The Seurat package is a great tool for manipulation with the 10X scRNAseq expression data. However, it has two major issues. The first one is that it assumes that the zero expression is true zero. While this is reasonable assumption with a high coverage, small coverage scRNAseq can suffer for drop out due to the nature of a small amount of starting product and certain randomness coming from used methodology. This means that the measured zero level of expression is more accurately described as a missing data. Unfortunatelly, the sparse matrice implementation used by Seurat can not allow this change of context.
+#' The Seurat package is a great tool for manipulation with the 10X scRNAseq expression data.
+#' However, it has two major issues. The first one is that it assumes that the zero expression
+#' is true zero. While this is reasonable assumption with a high coverage, small coverage scRNAseq
+#' can suffer from drop out due to the nature of a small amount of starting product and certain
+#' randomness coming from used methodology. This means that the measured zero level of expression
+#' is more accurately described as a missing data. Unfortunatelly, the sparse matrice implementation
+#'  used by Seurat does not allow this change of context.
 #'
-#' The second issue is the huge amount of dependencies that the Seurat brings. Due to the limited scope in which Seurat functionality is used and given that the utilized functionality had to be already rewritten due to the above reasons, it seems more convenient to just lift up remaining Seurat functionality.
+#' The second issue is the huge amount of dependencies that the Seurat brings. Due to the limited
+#' scope in which Seurat functionality is used and given that the utilized functionality had to be
+#' already rewritten due to the above reasons, it seems more convenient to just lift up remaining 
+#' Seurat functionality.
 #'
 #' @name expr
 NULL
