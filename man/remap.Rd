@@ -15,8 +15,9 @@ remap(
   nthreads = 4,
   chemistry = "auto",
   remake = FALSE,
-  cbam = FALSE,
-  cbar = FALSE
+  copy_bam = FALSE,
+  copy_bar = FALSE,
+  copy_h5 = FALSE
 )
 }
 \arguments{
@@ -40,11 +41,14 @@ remap(
 
 \item{remake}{\strong{optional} remake the output if it already exists}
 
-\item{cbam}{\strong{optional} a TRUE value or file path to a location where the re-mapped bam file
+\item{copy_bam}{\strong{optional} a TRUE value or file path to a location where the re-mapped bam file
 will be copied}
 
-\item{cbar}{\strong{optional} a TRUE value or file path to a location where the file with filtered
+\item{copy_bar}{\strong{optional} a TRUE value or file path to a location where the file with filtered
 barcodes will be copied}
+
+\item{copy_h5}{\strong{optional} a TRUE value or file path to a location where the \code{.h5} expression
+count matrix will be copied.}
 }
 \description{
 This function will remap a bam file previously mapped by the Cellranger software to a new genome.
@@ -63,9 +67,9 @@ all of them would share the same \code{refdir}.
 See the \link{bamtofastq}, \link{cellranger_mkref} and \link{cellranger_count} for details.
 
 Given the intended usage is to obtain a remapped bam file and a list of filtered barcodes,
-\code{cbam} and \code{cbar} parameters are provided. If \code{TRUE}, the bam file and barcodes are copied
-to the \code{outdir} folder as \code{prefix.bam} and \code{prefix.barcodes.txt} where \code{prefix} is the core
-of the input file (see \link{corename}). An arbitrary path can also be provided.
+\code{copy_bam} and \code{copy_bar} parameters are provided. If \code{TRUE}, the bam file and barcodes are
+copied to the \code{outdir} folder as \code{prefix.bam} and \code{prefix.barcodes.txt} where \code{prefix} is the
+core of the input file (see \link{corename}). An arbitrary path can also be provided.
 }
 \seealso{
 \link{bamtofastq}, \link{cellranger_mkref} and \link{cellranger_count} for details on the steps

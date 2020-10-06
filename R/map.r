@@ -15,9 +15,9 @@
 #' See the [bamtofastq], [cellranger_mkref] and [cellranger_count] for details.
 #'
 #' Given the intended usage is to obtain a remapped bam file and a list of filtered barcodes,
-#' `cbam` and `cbar` parameters are provided. If `TRUE`, the bam file and barcodes are copied
-#' to the `outdir` folder as `prefix.bam` and `prefix.barcodes.txt` where `prefix` is the core
-#' of the input file (see [corename]). An arbitrary path can also be provided.
+#' `copy_bam` and `copy_bar` parameters are provided. If `TRUE`, the bam file and barcodes are
+#' copied to the `outdir` folder as `prefix.bam` and `prefix.barcodes.txt` where `prefix` is the
+#' core of the input file (see [corename]). An arbitrary path can also be provided.
 #'
 #' @template remake
 #' @template nthreads
@@ -30,10 +30,12 @@
 #' @param refdir **optional a directory for the [cellranger_mkref], see details
 #' @param countdir **optional** a directory for the [cellranger_count], see details
 #' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
-#' @param cbam **optional** a TRUE value or file path to a location where the re-mapped bam file
+#' @param copy_bam **optional** a TRUE value or file path to a location where the re-mapped bam file
 #' will be copied 
-#' @param cbar **optional** a TRUE value or file path to a location where the file with filtered
+#' @param copy_bar **optional** a TRUE value or file path to a location where the file with filtered
 #' barcodes will be copied
+#' @param copy_h5 **optional** a TRUE value or file path to a location where the `.h5` expression
+#' count matrix will be copied.
 #' @seealso [bamtofastq], [cellranger_mkref] and [cellranger_count] for details on the steps
 #' performed by the `remap` function.
 #' @export 
@@ -41,7 +43,7 @@ remap = function(
     input, reference, annotation, outdir,
     fastqdir=NULL, refdir=NULL, countdir=NULL,
     nthreads=4, chemistry="auto", remake=FALSE,
-    cbam=FALSE, cbar=FALSE
+    copy_bam=FALSE, copy_bar=FALSE, copy_h5=FALSE
     ){
     if(is_nn(refdir))
         refdir = file.path(outdir, "ref")
@@ -76,14 +78,20 @@ remap = function(
     prefix = corename(input)
     cellranger_bam = file.path(countdir, "outs", "possorted_genome_bam.bam")
     cellranger_bar = file.path(countdir, "outs", "filtered_feature_bc_matrix", "barcodes.tsv.gz")
+    cellranger_h5 = file.path(countdir, "outs", "filtered_feature_bc_matrix.h5")
 
-    if(isTRUE(cbam))
-        cbam = file.path(outdir, paste0(prefix, ".bam"))
-    if(is.character(cbam))
-        file.copy(cellranger_bam, cbam, overwrite=remake)
+    if(isTRUE(copy_bam))
+        copy_bam = file.path(outdir, paste0(prefix, ".bam"))
+    if(is.character(copy_bam))
+        file.copy(cellranger_bam, copy_bam, overwrite=remake)
 
-    if(isTRUE(cbar))
-        cbar = file.path(outdir, paste0(prefix, ".barcodes.txt"))
-    if(is.character(cbar))
-        gunzip(cellranger_bar, cbar, overwrite=remake)
+    if(isTRUE(copy_bar))
+        copy_bar = file.path(outdir, paste0(prefix, ".barcodes.txt"))
+    if(is.character(copy_bar))
+        gunzip(cellranger_bar, copy_bar, overwrite=remake)
+
+    if(isTRUE(copy_h5))
+        copy_h5 = file.path(outdir, paste0(prefix, ".h5"))
+    if(is.character(copy_bar))
+        file.copy(cellranger_h5, copy_h5, overwrite=remake)
     }
