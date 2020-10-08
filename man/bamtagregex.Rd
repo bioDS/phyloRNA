@@ -4,7 +4,7 @@
 \alias{bamtagregex}
 \title{Change sam/bam tag values}
 \usage{
-bamtagregex(input, output, tag, pattern, replace)
+bamtagregex(input, output, tag, pattern, replace, remake = FALSE)
 }
 \arguments{
 \item{input}{an input sam/bam file}
@@ -16,6 +16,8 @@ bamtagregex(input, output, tag, pattern, replace)
 \item{pattern}{a regex pattern}
 
 \item{replace}{a string to replace matched pattern}
+
+\item{remake}{\strong{optional} remake the output if it already exists}
 }
 \description{
 Change tag value in sam/bam file using regular expression.

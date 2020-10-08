@@ -13,6 +13,7 @@
 #' makes working with a large bam files less than ideal.
 #'
 #' @template io
+#' @template remake
 #' @param tag a tag to modify
 #' @param pattern a regex pattern
 #' @param replace a string to replace matched pattern
@@ -24,7 +25,10 @@
 #' }
 #'
 #' @export
-bamtagregex = function(input, output, tag, pattern, replace){
+bamtagregex = function(input, output, tag, pattern, replace, remake=FALSE){
+    if(!remake && file.exists(output))
+        return(invisible())
+
     args = c(
         file.path(find.package("phyloRNA"), "bamtagregex.py"),
         input, output,
