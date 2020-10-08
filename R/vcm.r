@@ -49,14 +49,13 @@ vcm = function(
     bam, vcf, barcodes,
     output=NULL, min_coverage=0,
     nthreads=16, remake=FALSE, message=FALSE,
-     varchunk=NULL, chunksize=NULL,
+    varchunk=NULL, chunksize=NULL,
     adaptive=FALSE, factor=NULL){
     args = c(
         file.path(find.package("phyloRNA"), "vcm.py"),
         bam, vcf, barcodes,
         "--min_coverage", min_coverage,
-        "--nthreads", nthreads,
-        "--factor", factor
+        "--nthreads", nthreads
         )
 
     if(!is_nn(output)) args = c(args, "--output", output)
