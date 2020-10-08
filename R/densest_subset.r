@@ -85,6 +85,8 @@ densest_subset = function(x, empty=NA, steps=100, density=1){
         result = x[, -colidxdel, drop=FALSE]
     if(!is.null(rowidxdel) && is.null(colidxdel))
         result = x[-rowidxdel, , drop=FALSE]
+    if(!is.null(rowidxdel) && !is.null(colidxdel))
+        result = x[-rowidxdel, -colidxdel, drop=FALSE]
 
     list(
         "density" = densities,
