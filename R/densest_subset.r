@@ -99,7 +99,7 @@ densest_subset = function(x, empty=NA, steps=100, density=1){
 
     list(
         "density" = densities,
-        "delted_rows" = rowidxdel,
+        "deleted_rows" = rowidxdel,
         "deleted_columns" = colidxdel,
         "representation_matrix" = mat,
         "result" = result
