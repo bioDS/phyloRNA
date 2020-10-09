@@ -18,10 +18,16 @@
 #' densities  at each step of the algorithm
 #' @export
 densest_subset = function(x, empty=NA, steps=100, density=1){
-    if(!is.na(empty))
-        mat = empty_to_na(x, empty)
+    if(is.null(steps))
+        steps = Inf
+    if(steps == 0)
+        steps = Inf
 
-    mat = !is.na(mat)
+    if(is.na(empty)){
+        mat = !is.na(mat)
+        } else {
+        mat = (x != empty)
+        }
     mode(mat) = "numeric"
 
     rowsums = IndexedVector$new(rowSums(mat))
@@ -31,7 +37,8 @@ densest_subset = function(x, empty=NA, steps=100, density=1){
     colidxdel = c()
     densities = c()
 
-    for(i in seq_len(steps)){
+    i = 1 # alternatively, setting i to steps and comparing with 0
+    while(i < steps){
         rowmin = rowsums$min()
         colmin = colsums$min()
 
@@ -77,6 +84,8 @@ densest_subset = function(x, empty=NA, steps=100, density=1){
 
         if(current_density >= density)
             break
+
+        i = i+1
         }
 
     if(is.null(rowidxdel) && is.null(colidxdel))
