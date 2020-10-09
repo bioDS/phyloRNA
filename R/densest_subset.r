@@ -72,7 +72,7 @@ densest_subset = function(x, empty=NA, steps=100, density=1){
         if(rowsums$len() == 0 || colsums$len() == 0)
             break
 
-        current_density = rowsums$sum() / (rowsums$len()*colsums$len())
+        current_density = rowsums$sum() / (1*rowsums$len()*colsums$len())
         densities = c(densities, current_density)
 
         if(current_density >= density)
