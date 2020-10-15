@@ -183,8 +183,8 @@ get_features = function(file, gene_column=2, make_unique=TRUE){
 #' @export
 expr_normalize = function(data, scale_factor=10000){
     totals = colSums(data, na.rm=TRUE)
-    data = log1p( (t(data)/totals) * scale_factor)
-    t(data)
+    data = log1p( t(t(data)/totals) * scale_factor)
+    data
     }
 
 
