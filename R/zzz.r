@@ -23,7 +23,6 @@ phyloRNA_options = list(
     phyloRNA.gatk = "gatk",
     phyloRNA.vcftools = "vcftools",
     phyloRNA.python = "python3",
-    phyloRNA.gunzip = "gunzip",
     phyloRNA.gzip = "gzip"
     )
 

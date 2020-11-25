@@ -88,7 +88,7 @@ remap = function(
     if(isTRUE(copy_bar))
         copy_bar = file.path(outdir, paste0(prefix, ".barcodes.txt"))
     if(is.character(copy_bar))
-        gunzip(cellranger_bar, copy_bar, overwrite=remake)
+        file.copy(cellranger_bar, copy_bar, overwrite=remake)
 
     if(isTRUE(copy_h5))
         copy_h5 = file.path(outdir, paste0(prefix, ".h5"))
