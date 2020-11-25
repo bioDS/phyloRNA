@@ -1,7 +1,7 @@
 local_dir = function(dir, create=FALSE, env=parent.frame()){
     if(create)
         dir.create(dir)
-    withr::defer(unlink(dir, recurisve=TRUE, force=TRUE), envir=env)
+    withr::defer(unlink(dir, recursive=TRUE, force=TRUE), envir=env)
     }
 
 local_file = function(file, create=FALSE, env=parent.frame()){
