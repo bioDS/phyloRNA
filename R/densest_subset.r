@@ -17,7 +17,7 @@
 #' @return a list containing the densest submatrix, vectors of deleted columns and a vector of
 #' densities  at each step of the algorithm
 #' @export
-densest_subset = function(x, empty=NA, steps=100, density=1){
+densest_subset = function(x, empty=NA, density=1, steps=Inf){
     if(is.null(steps))
         steps = Inf
     if(steps == 0)
