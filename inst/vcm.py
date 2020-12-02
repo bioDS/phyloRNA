@@ -143,7 +143,8 @@ def process_variant(variant, barcodes, min_coverage=0):
     A a global variable BAMFILE of type pysam.AlignmentFile, must be defined!
     """
     reads = BAMFILE.fetch(variant.contig, variant.start, variant.stop)
-    reads = [read2tuple(read) for read in reads if read.has_tag("CB")]
+    reads = [read2tuple(read) for read in reads
+             if read.has_tag("CB") and read.mapping_quality == 255]
     bases = [process_barcode(barcode, reads, variant, min_coverage) for barcode in barcodes]
     line = vcm_line(variant, bases)
     return line
