@@ -10,6 +10,7 @@ vcm(
   barcodes,
   output = NULL,
   min_coverage = 0,
+  min_mapq = 60,
   nthreads = 16,
   remake = FALSE,
   message = FALSE,
@@ -31,6 +32,8 @@ is used.}
 
 \item{min_coverage}{\strong{optional} a minimum coverage for a position to not be considered
 unknown data}
+
+\item{min_mapq}{\strong{optional} minimum mapping quality}
 
 \item{nthreads}{\strong{optional} a number of threads to run on}
 
@@ -75,4 +78,9 @@ As scRNAseq are notoriously patchy, variants can take highly varied time depende
 on a number of reads mapped to that particular place. For this reason, the default
 values should provide the best performance. However, there might be situations
 where their modification would be beneficial.
+
+Mapping quality reported by various tools is highly inconsistent. STAR assign 255 to uniquely
+mapped reads and 0, 1 and 3 to reads that are mapped non-uniquelly. Other tools assign 255 to
+reads that are not mapped at all. This is what GATK assumes and when preprocessing, 255 is
+reasigned to 60, which is the default value for the \code{min_mapq} parameter.
 }

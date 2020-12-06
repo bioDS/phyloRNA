@@ -15,6 +15,10 @@
 #' values should provide the best performance. However, there might be situations
 #' where their modification would be beneficial.
 #'
+#' Mapping quality reported by various tools is highly inconsistent. STAR assign 255 to uniquely
+#' mapped reads and 0, 1 and 3 to reads that are mapped non-uniquelly. Other tools assign 255 to
+#' reads that are not mapped at all. This is what GATK assumes and when preprocessing, 255 is
+#' reasigned to 60, which is the default value for the `min_mapq` parameter.
 #'
 #' @template remake
 #' @template nthreads
@@ -26,6 +30,7 @@
 #' is used.
 #' @param min_coverage **optional** a minimum coverage for a position to not be considered
 #' unknown data
+#' @param min_mapq **optional** minimum mapping quality
 #' @param varchunk **optional** By default, the whole vcf file is processed at once.
 #' Alternatively, this parameter can be specified to iterate over the vcf file and read
 #' and process only a limited number of variants at once. This shouldl improve the performance
@@ -47,13 +52,14 @@
 #' @export
 vcm = function(
     bam, vcf, barcodes,
-    output=NULL, min_coverage=0,
+    output=NULL, min_coverage=0, min_mapq=60,
     nthreads=16, remake=FALSE, message=FALSE,
     varchunk=NULL, chunksize=NULL,
     adaptive=FALSE, factor=NULL){
     args = c(
         file.path(find.package("phyloRNA"), "vcm.py"),
         bam, vcf, barcodes,
+        "--min_mapq", min_mapq,
         "--min_coverage", min_coverage,
         "--nthreads", nthreads
         )

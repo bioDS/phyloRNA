@@ -38,6 +38,8 @@ def parse_args():
                               " directory is used"))
     parser.add_argument("--min_coverage", type=int, default=0,
                         help="A minimum coverage for a position to not be considered unknown")
+    parser.add_argument("--min_mapq", type=int, default=60,
+                        help="Minimum mapping quality")
     parser.add_argument("--nthreads", type=intplus, default=4,
                         help="Number of threads (or processes to be precise) to run in paralell")
     parser.add_argument("--varchunk", type=intplus,
@@ -100,7 +102,8 @@ def main():
         process_variant_partial = partial(
             process_variant,
             barcodes=barcodes,
-            min_coverage=args.min_coverage
+            min_coverage=args.min_coverage,
+            min_mapq=args.min_mapq
             )
 
         while True:
@@ -136,7 +139,7 @@ def intplus(value):
     return ivalue
 
 
-def process_variant(variant, barcodes, min_coverage=0):
+def process_variant(variant, barcodes, min_coverage=0, min_mapq=60):
     """
     Process a variant for all barcodes.
 
@@ -144,7 +147,7 @@ def process_variant(variant, barcodes, min_coverage=0):
     """
     reads = BAMFILE.fetch(variant.contig, variant.start, variant.stop)
     reads = [read2tuple(read) for read in reads
-             if read.has_tag("CB") and read.mapping_quality == 255]
+             if read.has_tag("CB") and read.mapping_quality >= min_mapq]
     bases = [process_barcode(barcode, reads, variant, min_coverage) for barcode in barcodes]
     line = vcm_line(variant, bases)
     return line
