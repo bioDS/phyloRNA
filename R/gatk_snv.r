@@ -23,7 +23,7 @@ gatk_snv = function(input, reference, output, outdir=NULL, remake=FALSE){
     if(!remake && file.exists(output))
         return(invisible())
 
-    if(!is_nn(outdir))
+    if(is_nn(outdir))
         outdir = file.path(dirname(output), "snv")
 
     mkdir(outdir)    
