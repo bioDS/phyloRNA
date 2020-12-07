@@ -12,20 +12,20 @@ vcftools_filter = function(input, output, remake=FALSE){
         return(invisible())
 
     readcmd = "--vcf"
-    writecmd = c("--stdout", ">")
+    writecmd = "--stdout"
 
     if(tools::file_ext(input) == "gz")
         readcmd = "--gzvcf"
 
     if(tools::file_ext(output) == "gz")
-        writecmd = c(writecmd, getOption("phyloRNA.gzip"), "-c", ">")
+        writecmd = c(writecmd, "|", getOption("phyloRNA.gzip"), "-c")
 
     args = c(
         readcmd, input,
         "--remove-filtered-all",
         "--remove-indels",
         "--recode",
-        writecmd, output
+        writecmd, ">", output
         )
 
     command = getOption("phyloRNA.vcftools")
