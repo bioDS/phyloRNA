@@ -4,7 +4,7 @@
 \alias{densest_subset}
 \title{Find the densest subset of a matrix}
 \usage{
-densest_subset(x, empty = NA, steps = 100, density = 1)
+densest_subset(x, empty = NA, density = 1, steps = Inf)
 }
 \arguments{
 \item{x}{a matrix with unknown values}
@@ -12,9 +12,9 @@ densest_subset(x, empty = NA, steps = 100, density = 1)
 \item{empty}{the unknown value if different from NA; such as \code{0} for a numeric matrix or \code{N},
 \code{empty} or \code{unknown} for character matrix}
 
-\item{steps}{the number of steps}
-
 \item{density}{a desired density}
+
+\item{steps}{the number of steps}
 }
 \value{
 a list containing the densest submatrix, vectors of deleted columns and a vector of
