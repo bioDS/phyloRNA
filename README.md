@@ -19,7 +19,7 @@ For full functionality, following external software is also required:
 * [gzip](http://www.gzip.org/): compress output stream from `vcftools`
 
 Install `cellranger` and `bamtofastq` from respective websites.
-To install `gatk`, `vcftools` and `python3`, you might consider the [conda](conda.io) package manager.
+To install `gatk`, `vcftools` and `python3`, you might consider the [conda](https://docs.conda.io/en/latest/) package manager.
 On UNIX-based OS, `gzip` should be already part of your distribution.
 Note that cellranger does not support Mac or Windows OS.
 
