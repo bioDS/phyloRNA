@@ -9,17 +9,17 @@ devtools::install_github("biods/phyloRNA")
 ### External software
 For full functionality, following external software is also required:
 
-* [cellranger]("https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger"): analyse 10X scRNA-seq data
-* [bamtofastq]("https://support.10xgenomics.com/docs/bamtofastq"): convert previously mapped BAM into fastq files
-* [gatk]("https://gatk.broadinstitute.org/hc/en-us"): various BAM processing and variant detection
-* [vcftools]("https://vcftools.github.io"): filter out Variant Coding Files (VCF)
-* [python3]("https://www.python.org/"): utilize the [pysam]("https://pysam.readthedocs.io") library for following scripts:
+* [cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): analyse 10X scRNA-seq data
+* [bamtofastq](https://support.10xgenomics.com/docs/bamtofastq): convert previously mapped BAM into fastq files
+* [gatk](https://gatk.broadinstitute.org/hc/en-us): various BAM processing and variant detection
+* [vcftools](https://vcftools.github.io): filter out Variant Coding Files (VCF)
+* [python3](https://www.python.org/): utilize the [pysam](https://pysam.readthedocs.io) library for following scripts:
   -  `vcm.py`: call scRNA-seq variants
   - `bamtagregex.py`: regex for sam/bam tags
-* [gzip]("http://www.gzip.org/"): compress output stream from `vcftools`
+* [gzip](http://www.gzip.org/): compress output stream from `vcftools`
 
 Install `cellranger` and `bamtofastq` from respective websites.
-To install `gatk`, `vcftools` and `python3`, you might consider the [conda]("conda.io") package manager.
+To install `gatk`, `vcftools` and `python3`, you might consider the [conda](conda.io) package manager.
 On UNIX-based OS, `gzip` should be already part of your distribution.
 Note that cellranger does not support Mac or Windows OS.
 
