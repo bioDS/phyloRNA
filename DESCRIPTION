@@ -1,6 +1,6 @@
 Package: phyloRNA
 Title: Tools for phylogenetic analyses of scRNAseq data
-Version: 0.0.1
+Version: 1.0.0
 Authors@R: 
     person(given = "Jiří",
            family = "Moravec",
