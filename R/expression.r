@@ -38,7 +38,6 @@ expr_read10x = function(dir, gene_column=2, unique_features=TRUE, strip_suffix=F
         barcodes = sub("-1$", "", barcodes)
 
     features = get_features(features, gene_column=2, make_unique=unique_features)
-        rownames(x = data) = make.unique(names = features[, gene_column])
 
     data = Matrix::readMM(matrix_mtx)
     rownames(data) = features[,gene_column]
