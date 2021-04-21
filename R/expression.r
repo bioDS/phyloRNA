@@ -41,6 +41,7 @@ expr_read10x = function(dir, gene_column=2, unique_features=TRUE, strip_suffix=F
 
     data = Matrix::readMM(matrix_mtx)
     rownames(data) = features[,gene_column]
+    colnames(data) = barcodes
 
     if(ncol(features) > 2){
         data = split_data(data, features[,3])
