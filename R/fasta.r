@@ -49,9 +49,7 @@ fasta = function(data, margin=2, file=NULL){
 #' identical(seq1, seq2)
 #'
 #' @seealso
-#' [write_fasta] to write fasta file,
-#' [table2fasta] to transform table into a fasta file,
-#' [fasta2table] tp transform fasta into a table
+#' [write_fasta] to write sequences into a fasta file
 #'
 #' @export
 read_fasta = function(file){
@@ -59,7 +57,7 @@ read_fasta = function(file){
     starts = grep(">", text)
     stops = c(starts[-1]-1, length(text))
 
-    fasta = mapply(
+    seq = mapply(
         function(start, stop, text){
             seq = text[(start+1):stop]
             seq = gsub("[:blank:]*", "", seq)
@@ -67,17 +65,17 @@ read_fasta = function(file){
             },
         starts, stops, MoreArgs=list(text)
         )
-    names(fasta) = sub("^>", "", text[starts])
+    names(seq) = sub("^>", "", text[starts])
 
-    fasta
+    seq
     }
 
 
 #' Write fasta file
 #'
-#' Write sequences in a fasta format
+#' Write a named vector of sequences to a file in a fasta format.
 #'
-#' @param seq named vector of sequences
+#' @param seq a named vector of sequences
 #' @param file an output file
 #'
 #' @examples
@@ -92,9 +90,7 @@ read_fasta = function(file){
 #' identical(paste0(">", names(seq), "\n", seq, collapse="\n"), readLines(fasta))
 #'
 #' @seealso
-#' [read_fasta] to read fasta file,
-#' [table2fasta] to transform table into a fasta file,
-#' [fasta2table] tp transform fasta into a table
+#' [read_fasta] to read sequences from a fasta file
 #'
 #' @export
 write_fasta = function(seq, file){
@@ -111,62 +107,68 @@ write_fasta = function(seq, file){
     }
 
 
-#' Convert a table into fasta format
+#' Convert a table into a vector of sequences
 #'
-#' Convert a data.frame or matrix into a fasta format, named vector of sequences.
-#' This is done by concatenating elements either row-wise (margin 1) or column-wise (margin 2).
+#' Convert a data.frame or matrix into a vector of sequences.
+#' This is done by concatenating elements either row-wise (margin 1)
+#' or column-wise (margin 2).
 #'
 #' @param x data.frame or matrix, symbols must have length 1
-#' @param margin **optional** whether rows (1) or columns (2) should be concatenated
-#' @param na substitute `NA` for a missing/unknown symbol.
-#' @return a vector of fasta files
+#' @param margin **optional** whether rows (1) or columns (2) should be
+#' concatenated
+#' @param na **optional** substitute `NA` for a missing/unknown symbol.
+#' @return a vector of sequences
 #'
 #' @examples
 #' mat = matrix(letters[1:4],2,2)
-#' fasta = table2fasta(mat)
+#' fasta = tab2seq(mat)
 #' identical(fasta, c("ac", "bd"))
 #'
 #' @seealso
-#' [write_fasta] to write fasta file,
-#' [read_fasta] to read fasta file,
-#' [fasta2table] tp transform fasta into a table
+#' [seq2tab] to transform sequences into a table,
+#' [read_fasta] to read sequences from a fasta file,
+#' [write_fasta] to write sequences into a fasta file
 #'
 #' @export
-table2fasta = function(x, margin=1, na=c("N","-","?")){
+tab2seq = function(x, margin=1, na=c("N","-","?")){
     na = match.arg(na)
-
     x[is.na(x)] = na
+
     if(any(nchar(x) != 1))
         stop("The length of the elements in matrix must be 1")
-    fasta = apply(x, margin, function(y) paste0(y, collapse=""))
-    fasta
+
+    seq = apply(x, margin, function(y) paste0(y, collapse=""))
+    seq
     }
 
 
-#' Convert a fasta into table
+#' Convert sequences into a table
 #'
-#' Convert a fasta, named vector, into a matrix by splitting up sequences into bases/SNV/CNVs.
+#' Convert a named vector of sequences into a matrix by splitting up sequences
+#' into individual positions.
 #'
-#' @param fasta a named vector of sequences, such as from `read_fasta`
-#' @param margin **optional** whether rows sequences should be in rows (1) or columns (2)
+#' @param x a named vector of sequences, such as from `read_fasta`
+#' @param margin **optional** whether rows sequences should be in rows (1)
+#' or columns (2)
 #' @return a matrix of fasta sequences
 #'
 #' @examples
-#' fasta = c("ac", "bd")
-#' mat = fasta2table(fasta)
-#' identical(fasta, c("ac","bd"))
+#' seq = c("ac", "bd")
+#' mat = seq2tab(seq)
+#' identical(seq, c("ac","bd"))
 #'
 #' @seealso
-#' [write_fasta] to write fasta file,
-#' [read_fasta] to read fasta file,
-#' [table2fasta] to transform table into a fasta file
+#' [tab2seq] to transform table into a vector of sequences,
+#' [read_fasta] to read sequences from a fasta file,
+#' [write_fasta] to write sequences into a fasta file
 #'
 #' @export
-fasta2table = function(fasta, margin=1){
+seq2tab = function(x, margin=1){
+    # match.arg cannot be used on a numeric vector
     if(!margin %in% c(1,2))
         stop("Margin must be either 1 or 2")
         
-    data = strsplit(fasta, "")
+    data = strsplit(x, "")
 
     if(margin == 1)
         data = do.call(rbind, data)
