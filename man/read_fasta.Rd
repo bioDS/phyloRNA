@@ -31,7 +31,5 @@ identical(seq1, seq2)
 
 }
 \seealso{
-\link{write_fasta} to write fasta file,
-\link{table2fasta} to transform table into a fasta file,
-\link{fasta2table} tp transform fasta into a table
+\link{write_fasta} to write sequences into a fasta file
 }

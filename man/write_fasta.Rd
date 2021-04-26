@@ -7,12 +7,12 @@
 write_fasta(seq, file)
 }
 \arguments{
-\item{seq}{named vector of sequences}
+\item{seq}{a named vector of sequences}
 
 \item{file}{an output file}
 }
 \description{
-Write sequences in a fasta format
+Write a named vector of sequences to a file in a fasta format.
 }
 \examples{
 # Construct sequences as a named vector
@@ -27,7 +27,5 @@ identical(paste0(">", names(seq), "\n", seq, collapse="\n"), readLines(fasta))
 
 }
 \seealso{
-\link{read_fasta} to read fasta file,
-\link{table2fasta} to transform table into a fasta file,
-\link{fasta2table} tp transform fasta into a table
+\link{read_fasta} to read sequences from a fasta file
 }
