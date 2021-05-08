@@ -65,7 +65,6 @@ read_fasta = function(file){
 #'
 #' @export
 write_fasta = function(seq, file){
-    print(seq)
     if(!inherits(seq, "character"))
         stop("Invalid type. Sequences must be of a character type.")
     if(is.null(names(seq)))
