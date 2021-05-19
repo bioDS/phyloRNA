@@ -73,7 +73,7 @@ cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads
         paste0("--chemistry=", chemistry)
         )
     if(!is.null(sample))
-        c(args, psate0("--sample=", sample))
+        c(args, paste0("--sample=", sample))
 
     command = getOption("phyloRNA.cellranger")
     systemE(command, args, call=TRUE, dir=abspath(dirname(outdir)))
