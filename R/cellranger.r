@@ -49,11 +49,13 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FA
 #' @param fastqdir a dir with fastq files prepared with [bamtofastq]
 #' @param refdir a directory with the reference files created by the [cellranger_mkref]
 #' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
+#' @param sample **optional** a file prefix to specify which sample to select,
+#'    required if fastqdir contains fastq files for multiple samples
 #'
 #' @seealso [cellranger_mkref] to create the required reference genome directory (`refdir`)
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping
 #' @export
-cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads=4, remake=FALSE){
+cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads=4, sample=NULL, remake=FALSE){
     statusfile = file.path(outdir, "completed")
     if(file.exists(statusfile) && !remake)
         return(invisible())
@@ -70,6 +72,8 @@ cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads
         paste0("--localcores=", nthreads),
         paste0("--chemistry=", chemistry)
         )
+    if(!is.null(sample))
+        c(args, "--sample", sample)
 
     command = getOption("phyloRNA.cellranger")
     systemE(command, args, call=TRUE, dir=abspath(dirname(outdir)))

@@ -10,6 +10,7 @@ cellranger_count(
   outdir,
   chemistry = "auto",
   nthreads = 4,
+  sample = NULL,
   remake = FALSE
 )
 }
@@ -23,6 +24,9 @@ cellranger_count(
 \item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
 
 \item{nthreads}{\strong{optional} a number of threads to run on}
+
+\item{sample}{\strong{optional} a file prefix to specify which sample to select,
+required if fastqdir contains fastq files for multiple samples}
 
 \item{remake}{\strong{optional} remake the output if it already exists}
 }
