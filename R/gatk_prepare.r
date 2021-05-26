@@ -41,11 +41,11 @@ gatk_prepare = function(input, output, reference, vcf, barcodes=NULL, outdir=NUL
         outdir = outdir
         )
 
-    barcodes = readLines(barcodes)
-
     # Filter barcodes first, this will reduce the total size
-    if(!is_nn(barcodes))
+    if(!is_nn(barcodes)){
+        barcodes = readLines(barcodes)
         bam$FilterSamReadsTag("CB", barcodes)
+        }
 
     # sort, split cigar, recalibrate:
     bam$SortSam()$SplitNCigarReads()$Recalibrate()
