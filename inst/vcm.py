@@ -93,10 +93,10 @@ def main():
 
     index_bam(args.bam, args.nthreads)
 
-    if not barcodes:
-        barcodes = get_barcodes(args.bam)
-    else:
+    if args.barcodes:
         barcodes = read_barcodes(args.barcodes)
+    else:
+        barcodes = get_barcodes(args.bam)
 
     with pysam.VariantFile(args.vcf, "rb", duplicate_filehandle=True) as vcfile, \
         open(args.output, "wt") as vcmfile, \
