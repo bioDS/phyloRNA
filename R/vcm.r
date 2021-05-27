@@ -25,7 +25,7 @@
 #'
 #' @param bam an input bam file
 #' @param vcf an input vcf file
-#' @param barcodes a barcode file
+#' @param barcodes **optional** a barcode file
 #' @param output **optional an output file. If not specified `<bam>.vcm` in a current directory
 #' is used.
 #' @param min_coverage **optional** a minimum coverage for a position to not be considered
@@ -51,19 +51,21 @@
 #' @param message **optional** Print a progress message.
 #' @export
 vcm = function(
-    bam, vcf, barcodes,
-    output=NULL, min_coverage=0, min_mapq=60,
+    bam, vcf,
+    barcodes=NULL, output=NULL,
+    min_coverage=0, min_mapq=60,
     nthreads=16, remake=FALSE, message=FALSE,
     varchunk=NULL, chunksize=NULL,
     adaptive=FALSE, factor=NULL){
     args = c(
         file.path(find.package("phyloRNA"), "vcm.py"),
-        bam, vcf, barcodes,
+        bam, vcf,
         "--min_mapq", min_mapq,
         "--min_coverage", min_coverage,
         "--nthreads", nthreads
         )
 
+    if(!is_nn(barcodes)) args = c(args, "--barcodes", barcodes)
     if(!is_nn(output)) args = c(args, "--output", output)
     if(!is_nn(varchunk)) args = c(args, "--varchunk", varchunk)
     if(!is_nn(chunksize)) args = c(args, "--chunksize", chunksize)

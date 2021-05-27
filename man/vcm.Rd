@@ -7,7 +7,7 @@
 vcm(
   bam,
   vcf,
-  barcodes,
+  barcodes = NULL,
   output = NULL,
   min_coverage = 0,
   min_mapq = 60,
@@ -25,7 +25,7 @@ vcm(
 
 \item{vcf}{an input vcf file}
 
-\item{barcodes}{a barcode file}
+\item{barcodes}{\strong{optional} a barcode file}
 
 \item{output}{**optional an output file. If not specified \verb{<bam>.vcm} in a current directory
 is used.}

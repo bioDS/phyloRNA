@@ -32,7 +32,9 @@ def parse_args():
         )
     parser.add_argument("bam", type=str, help="A sam or a bam file that will be parsed")
     parser.add_argument("vcf", type=str, help="A variant calling file to be summarized")
-    parser.add_argument("barcodes", type=str, help="File with barcodes")
+    parser.add_argument("--barcodes", type=str,
+                        help=("File with cell barcodes. If not specified, all cell barcodes"
+                              " in the SAM/BAM are used."))
     parser.add_argument("--output", type=str,
                         help=("An output file. If not specified, a `<bam>.vcm` in a current"
                               " directory is used"))
@@ -89,8 +91,12 @@ def main():
         print(f"File {args.output} already exists.")
         return
 
-    barcodes = read_barcodes(args.barcodes)
     index_bam(args.bam, args.nthreads)
+
+    if not barcodes:
+        barcodes = get_barcodes(args.bam)
+    else:
+        barcodes = read_barcodes(args.barcodes)
 
     with pysam.VariantFile(args.vcf, "rb", duplicate_filehandle=True) as vcfile, \
         open(args.output, "wt") as vcmfile, \
@@ -216,6 +222,13 @@ def read_barcodes(barcodes):
         text = file.readlines()
     text = [line.rstrip("\n") for line in text]
     return text
+
+
+def get_barcodes(file):
+    """Get unique cell barcodes from the SAM/BAM"""
+    with pysam.AlignmentFile(file) as bam:
+        values = {read.get_tag("CB") for read in bam.fetch(until_eof=TRUE) if read.gas_tag("CB")}
+    return list(values)
 
 
 def passed_filter(variant):
