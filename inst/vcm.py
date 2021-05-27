@@ -227,7 +227,7 @@ def read_barcodes(barcodes):
 def get_barcodes(file):
     """Get unique cell barcodes from the SAM/BAM"""
     with pysam.AlignmentFile(file) as bam:
-        values = {read.get_tag("CB") for read in bam.fetch(until_eof=True) if read.gas_tag("CB")}
+        values = {read.get_tag("CB") for read in bam.fetch(until_eof=True) if read.has_tag("CB")}
     return list(values)
 
 
