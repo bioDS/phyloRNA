@@ -31,7 +31,7 @@ read_fasta = function(file){
     seq = mapply(
         function(start, stop, text){
             seq = text[(start+1):stop]
-            seq = gsub("[:blank:]*", "", seq)
+            seq = gsub("[[:blank:]]*", "", seq)
             paste0(seq, collapse="")
             },
         starts, stops, MoreArgs=list(text)
