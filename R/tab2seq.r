@@ -37,7 +37,7 @@ nchardf = function(x){
     if(is.matrix(x))
         return(nchar(x))
     if(is.data.frame(x))
-        return(apply(x, c(1,2), nchar))
+        return(vapply(x, nchar, integer(nrow(x))))
     stop("ERROR: Unknown type")
     }
 
