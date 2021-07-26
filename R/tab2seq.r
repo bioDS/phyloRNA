@@ -25,11 +25,20 @@ tab2seq = function(x, margin=1, na=c("N","-","?")){
     na = match.arg(na)
     x[is.na(x)] = na
 
-    if(any(nchar(x) != 1))
+    if(any(nchardf(x) != 1))
         stop("The length of the elements in matrix must be 1")
 
     seq = apply(x, margin, function(y) paste0(y, collapse=""))
     seq
+    }
+
+
+nchardf = function(x){
+    if(is.matrix(x))
+        return(nchar(x))
+    if(is.data.frame(x))
+        return(apply(x, c(1,2), nchar))
+    stop("ERROR: Unknown type")
     }
 
 
