@@ -24,14 +24,14 @@ densest_subset = function(x, empty=NA, density=1, steps=Inf){
         steps = Inf
 
     if(is.na(empty)){
-        x = !is.na(x)
+        mat = !is.na(x)
         } else {
-        x = (x != empty)
+        mat = (x != empty)
         }
-    mode(x) = "numeric"
+    mode(mat) = "numeric"
 
-    rowsums = IndexedVector$new(rowSums(x))
-    colsums = IndexedVector$new(colSums(x))
+    rowsums = IndexedVector$new(rowSums(mat))
+    colsums = IndexedVector$new(colSums(mat))
 
     rowidxdel = c()
     colidxdel = c()
@@ -50,9 +50,9 @@ densest_subset = function(x, empty=NA, density=1, steps=Inf){
 
             rowidxdel = c(rowidxdel, matindices)
             if(!is.null(colidxdel)){
-                del_colsums = colSums(x[matindices, -colidxdel, drop=FALSE])
+                del_colsums = colSums(mat[matindices, -colidxdel, drop=FALSE])
                 } else {
-                del_colsums = colSums(x[matindices, , drop=FALSE])
+                del_colsums = colSums(mat[matindices, , drop=FALSE])
                 }
 
             rowsums$subset(-indices)
@@ -64,9 +64,9 @@ densest_subset = function(x, empty=NA, density=1, steps=Inf){
 
             colidxdel = c(colidxdel, matindices)
             if(!is.null(rowidxdel)){
-                del_rowsums = rowSums(x[-rowidxdel, matindices, drop=FALSE])
+                del_rowsums = rowSums(mat[-rowidxdel, matindices, drop=FALSE])
                 } else {
-                del_rowsums = rowSums(x[, matindices, drop=FALSE])
+                del_rowsums = rowSums(mat[, matindices, drop=FALSE])
                 }
             colsums$subset(-indices)
             rowsums$substract(del_rowsums)
