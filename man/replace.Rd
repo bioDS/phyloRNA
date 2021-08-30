@@ -20,3 +20,11 @@ a vector a a matrix with replaced values
 Replace the values in a vector or a matrix \code{x}, specified by the vector of values
 \code{values} with the values in the vector \code{replace}.
 }
+\examples{
+vec = c("foo", "bar", "baz")
+replace(vec, "bar", "spam")
+replace(vec, c("foo", "bar"), c("bar", "foo"))
+replace(vec, "spam", "eggs")
+replace(vec, c("foo", "bar", "baz"), c("spam", "spam", "spam"))
+
+}

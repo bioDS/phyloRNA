@@ -11,7 +11,7 @@
 #' @examples
 #' vec = c("foo", "bar", "baz")
 #' replace(vec, "bar", "spam")
-#' replace(vec, c("foo", bar"), c("bar", "foo"))
+#' replace(vec, c("foo", "bar"), c("bar", "foo"))
 #' replace(vec, "spam", "eggs")
 #' replace(vec, c("foo", "bar", "baz"), c("spam", "spam", "spam"))
 #'
