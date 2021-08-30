@@ -65,7 +65,7 @@ nchardf = function(x){
 #' @export
 seq2tab = function(x, margin=1){
     # match.arg cannot be used on a numeric vector
-    if(!margin %in% c(1,2))
+    if(length(margin) != 1 || !margin %in% c(1,2))
         stop("Margin must be either 1 or 2")
         
     data = strsplit(x, "")
