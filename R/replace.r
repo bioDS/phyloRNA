@@ -18,7 +18,7 @@
 #' @export
 replace = function(x, values, replace){
     if(length(values) != length(replace))
-        stop("ERROR: The vector `values` and `replace` must have the same length!")
+        stop("The vector `values` and `replace` must have the same length!")
 
     match = match(x, values)
     x[!is.na(match)] = replace[match][!is.na(match)]

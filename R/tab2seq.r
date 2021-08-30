@@ -38,7 +38,7 @@ nchardf = function(x){
         return(nchar(x))
     if(is.data.frame(x))
         return(vapply(x, nchar, integer(nrow(x))))
-    stop("ERROR: Unknown type")
+    stop("Unsupported type: only matrix and data.frame are supported")
     }
 
 
