@@ -37,7 +37,7 @@ test_that("extracting path core with corename", {
     })
 
 
-test_that("test abspath when path exists", {
+test_that("abspath works when path exists", {
     tmpdir = "."
     tmpfile = tempfile(tmpdir=".")
     local_file(tmpfile, create=TRUE)
@@ -47,11 +47,63 @@ test_that("test abspath when path exists", {
     })
 
 
-test_that("absbpath when path does not exists", {
+test_that("absbpath works when path does not exists", {
     tmpdir = file.path(".", "foo")
     tmpfile = tempfile(tmpdir=".")
     expect_error(tools::file_path_as_absolute(tmpdir))
     expect_error(tools::file_path_as_absolute(tmpfile))
     expect_equal(abspath(tmpdir), file.path(getwd(), "foo"))
     expect_equal(abspath(tmpfile), file.path(getwd(), basename(tmpfile)))
+    })
+
+
+test_that("is_nn recognize NULL and NA", {
+    expect_true(is_nn(NULL))
+    expect_true(is_nn(NA))
+    expect_true(is_nn(c(NA, NA)))
+    
+    expect_false(is_nn(c(1, NA)))
+    expect_false(is_nn(c("a", NA)))
+    })
+
+
+test_that("missing_to_na transform a custom missing value to the NA", {
+    # vector
+    foo = c(0, 1, 2)
+    bar = c(NA, 1, 2)
+    expect_identical(missing_to_na(foo, 0), bar)
+    
+    foo = c("N/A", "foo", "bar")
+    bar = c(NA, "foo", "bar")
+    expect_identical(missing_to_na(foo, "N/A"), bar)
+    
+    foo = c(NA, 1, 2)
+    bar = c(NA, "foo", "bar")
+    expect_identical(missing_to_na(foo, NA), foo)
+    expect_identical(missing_to_na(bar, NA), bar)
+
+    # list
+    foo = list(0, 1, 2)
+    bar = list(NA, 1, 2)
+    expect_identical(missing_to_na(foo, 0), bar)
+    
+    foo = list("N/A", "foo", "bar")
+    bar = list(NA, "foo", "bar")
+    expect_identical(missing_to_na(foo, "N/A"), bar)
+    
+    # list, but without recursion
+    foo = list(c("N/A", "foo", "bar"), "N/A", "foo", "bar")
+    bar = list(c("N/A", "foo", "bar"), NA, "foo", "bar")
+    expect_identical(missing_to_na(foo, "N/A"), bar)
+
+    # matrix
+    foo = matrix(1:4, 2, 2)
+    bar = foo
+    bar [1,1] = NA
+    expect_identical(missing_to_na(foo, 1), bar)
+
+    # data.frame
+    foo = as.data.frame(foo)
+    bar = as.data.frame(bar)
+    expect_identical(missing_to_na(foo, 1), bar)
     })
