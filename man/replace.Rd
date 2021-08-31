@@ -2,22 +2,30 @@
 % Please edit documentation in R/replace.r
 \name{replace}
 \alias{replace}
+\alias{replace.default}
+\alias{replace.data.frame}
 \title{Replace values in a vector or a matrix}
 \usage{
-replace(x, values, replace)
+replace(x, ...)
+
+\method{replace}{default}(x, values, replace, ...)
+
+\method{replace}{data.frame}(x, values, replace, ...)
 }
 \arguments{
-\item{x}{a vector or a matrix}
+\item{x}{an object}
+
+\item{...}{further arguments passed to or from other methods}
 
 \item{values}{a vector of values in 'x' to be replaced by values in \code{replace}}
 
 \item{replace}{replacement values}
 }
 \value{
-a vector a a matrix with replaced values
+an object with replaced values
 }
 \description{
-Replace the values in a vector or a matrix \code{x}, specified by the vector of values
+Replace the values in \code{x}, specified by the vector of values
 \code{values} with the values in the vector \code{replace}.
 }
 \examples{
