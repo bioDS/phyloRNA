@@ -4,6 +4,7 @@ local_dir = function(dir, create=FALSE, env=parent.frame()){
     withr::defer(unlink(dir, recursive=TRUE, force=TRUE), envir=env)
     }
 
+
 local_file = function(file, create=FALSE, env=parent.frame()){
     if(create)
         file.create(file)
@@ -23,8 +24,8 @@ test_that("mkdir creates a folders recursively", {
     tmpdir2 = file.path(tmpdir, "foo")
     tmpdir3 = file.path(tmpdir2, "bar")
     local_dir(tmpdir2)
-    expect_warning(dir.create(tmpdir))
-    expect_silent(mkdir(tmpdir))
+    expect_warning(dir.create(tmpdir3))
+    expect_silent(mkdir(tmpdir3))
     })
 
 
