@@ -45,3 +45,29 @@ test_that("rescale ordinal scale", {
     bar = c("a", "c", "b")
     expect_identical(replace_ordinal(foo, letters), bar)
     })
+
+
+test_that("replace_ordinal works on different different data types", {
+    # seq_along is converting to integer, although it shouldn't
+    # using expect_equal instead    
+    
+    # vector
+    foo = c(1, 3, 5)
+    bar = c(1, 2, 3)
+    expect_equal(replace_ordinal(foo), bar)
+
+    # list
+    foo = list(1, 3, 5)
+    bar = list(1, 2, 3)
+    expect_equal(replace_ordinal(foo), bar)
+    
+    # matrix
+    foo = matrix(c(1, 3, 5, 7), 2, 2)
+    bar = matrix(c(1,2,3,4), 2, 2)
+    expect_equal(replace_ordinal(foo), bar)
+
+    # data.frame
+    foo = as.data.frame(foo)
+    bar = as.data.frame(bar)
+    expect_equal(replace_ordinal(foo), bar)
+    })
