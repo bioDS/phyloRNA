@@ -65,7 +65,7 @@ replace.data.frame = function(x, values, replace, ...){
 #'
 #' @export
 replace_ordinal = function(x, replace=NULL){
-    categories = sort(unlist(unique(x)))
+    categories = sort(unique(as.vector(unlist(x))))
 
     if(is.null(replace))
         replace = seq_along(categories)

@@ -71,3 +71,14 @@ test_that("replace_ordinal works on different different data types", {
     bar = as.data.frame(bar)
     expect_equal(replace_ordinal(foo), bar)
     })
+
+
+test_that("Categories in replace_ordinal are being unlisted correctly", {
+    foo = matrix(c("a","b","a","c"), 2, 2)  
+    bar = matrix(as.character(c(1,2,1,3)), 2, 2)
+    expect_identical(replace_ordinal(foo), bar)
+    
+    foo = as.data.frame(foo)
+    bar = as.data.frame(bar)
+    expect_identical(replace_ordinal(foo), bar)
+    })
