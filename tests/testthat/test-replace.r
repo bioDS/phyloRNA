@@ -47,38 +47,74 @@ test_that("rescale ordinal scale", {
     })
 
 
-test_that("replace_ordinal works on different different data types", {
-    # seq_along is converting to integer, although it shouldn't
-    # using expect_equal instead    
+test_that("replace_ordinal preserve type and works for vector", {
+    # integer
+    foo = c(1L, 3L, 1L, 5L)
+    bar = c(1L, 2L, 1L, 3L)
+    expect_identical(replace_ordinal(foo), bar)
     
-    # vector
-    foo = c(1, 3, 5)
-    bar = c(1, 2, 3)
-    expect_equal(replace_ordinal(foo), bar)
-
-    # list
-    foo = list(1, 3, 5)
-    bar = list(1, 2, 3)
-    expect_equal(replace_ordinal(foo), bar)
+    # double
+    foo = c(1, 3, 1, 5)
+    bar = c(1, 2, 1, 3)
+    expect_identical(replace_ordinal(foo), bar)
     
-    # matrix
-    foo = matrix(c(1, 3, 5, 7), 2, 2)
-    bar = matrix(c(1,2,3,4), 2, 2)
-    expect_equal(replace_ordinal(foo), bar)
-
-    # data.frame
-    foo = as.data.frame(foo)
-    bar = as.data.frame(bar)
-    expect_equal(replace_ordinal(foo), bar)
+    # character
+    foo = c("a", "b", "a", "c")
+    bar = c("1", "2", "1", "3")
+    expect_identical(replace_ordinal(foo), bar)
     })
 
 
-test_that("Categories in replace_ordinal are being unlisted correctly", {
-    foo = matrix(c("a","b","a","c"), 2, 2)  
-    bar = matrix(as.character(c(1,2,1,3)), 2, 2)
+test_that("replace_ordinal preserves type and works for list", {
+    # integer
+    foo = list(1L, 3L, 1L, 5L)
+    bar = list(1L, 2L, 1L, 3L)
     expect_identical(replace_ordinal(foo), bar)
     
-    foo = as.data.frame(foo)
-    bar = as.data.frame(bar)
+    # double
+    foo = list(1, 3, 1, 5)
+    bar = list(1, 2, 1, 3)
+    expect_identical(replace_ordinal(foo), bar)
+    
+    # character
+    foo = list("a", "b", "a", "c")
+    bar = list("1", "2", "1", "3")
+    expect_identical(replace_ordinal(foo), bar)
+    })
+
+
+test_that("replace_ordinal preserve type and works for matrix", {
+    # integer
+    foo = matrix(c(1L, 3L, 1L, 5L), 2, 2)
+    bar = matrix(c(1L, 2L, 1L, 3L), 2, 2)
+    expect_identical(replace_ordinal(foo), bar)
+    
+    # double
+    foo = matrix(c(1, 3, 1, 5), 2, 2)
+    bar = matrix(c(1, 2, 1, 3), 2, 2)
+    expect_identical(replace_ordinal(foo), bar)
+    
+    # character
+    foo = matrix(c("a", "b", "a", "c"), 2, 2)
+    bar = matrix(c("1", "2", "1", "3"), 2, 2)
+    expect_identical(replace_ordinal(foo), bar)
+    })
+
+
+
+test_that("replace_ordinal preserve type and works for data.frame", {
+    # integer
+    foo = as.data.frame(matrix(c(1L, 3L, 1L, 5L), 2, 2))
+    bar = as.data.frame(matrix(c(1L, 2L, 1L, 3L), 2, 2))
+    expect_identical(replace_ordinal(foo), bar)
+    
+    # double
+    foo = as.data.frame(matrix(c(1, 3, 1, 5), 2, 2))
+    bar = as.data.frame(matrix(c(1, 2, 1, 3), 2, 2))
+    expect_identical(replace_ordinal(foo), bar)
+    
+    # character
+    foo = as.data.frame(matrix(c("a", "b", "a", "c"), 2, 2))
+    bar = as.data.frame(matrix(c("1", "2", "1", "3"), 2, 2))
     expect_identical(replace_ordinal(foo), bar)
     })
