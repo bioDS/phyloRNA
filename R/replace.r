@@ -68,7 +68,7 @@ replace_ordinal = function(x, replace=NULL){
     categories = sort(unique(as.vector(unlist(x))))
 
     if(is.null(replace))
-        replace = seq_along(categories)
+        replace = as(seq_along(categories), typeof(categories))
     if(length(replace) < length(categories))
         stop("Not enough replacement values.")
     replace = replace[seq_along(categories)]
