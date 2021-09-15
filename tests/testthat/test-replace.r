@@ -118,3 +118,14 @@ test_that("replace_ordinal preserve type and works for data.frame", {
     bar = as.data.frame(matrix(c("1", "2", "1", "3"), 2, 2))
     expect_identical(replace_ordinal(foo), bar)
     })
+
+
+test_that("replace_ordinal change type when a custom vector is provided", {
+    # double to character
+    foo = as.data.frame(matrix(c(1, 3, 1, 5), 2, 2))
+    bar = as.data.frame(matrix(c("a", "b", "a", "c"), 2, 2))
+    expect_identical(replace_ordinal(foo, letters), bar)
+    
+    # character to double
+    expect_identical(replace_ordinal(bar, c(1,3,5)), foo)
+    })

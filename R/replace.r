@@ -46,11 +46,18 @@ replace.data.frame = function(x, values, replace, ...){
 #'
 #' Rescale an ordinal scale to replace missing categories.
 #' This will assure that the currently present ordinal categories are sequential.
-#' Alternatively, user can provided replacement values. In such case,
-#' the user-provided values will be used as-is.
+#'
+#' By default `replace_ordinal` function replaces the sorted unique elements in `x` with a numeric
+#' series `1` to `N`. The type of the object is preserved, e.g., if the object type of `x` is
+#' integer vector, matrix or data.frame, the replacement series as well as the returning object will
+#' be integer as well.
+#'
+#' Alternatively, user can provide vector of replacement values. This vector will be used in
+#' provided order and the returned object will have an elements of the requested type.
 #'
 #' @param x an object with ordinal categories
-#' @param replace **optional** a vector of replacement values
+#' @param replace **optional** a vector of replacement values, this vector is used as-is in the
+#' provided order.
 #' @return x where all categories are present and sequential
 #' a sequential numeric vector
 #'
@@ -73,5 +80,5 @@ replace_ordinal = function(x, replace=NULL){
         stop("Not enough replacement values.")
     replace = replace[seq_along(categories)]
 
-    replace(x, categories, replace)
+    convert(replace(x, categories, replace), typeof(replace))
     }
