@@ -129,3 +129,14 @@ test_that("replace_ordinal change type when a custom vector is provided", {
     # character to double
     expect_identical(replace_ordinal(bar, c(1,3,5)), foo)
     })
+
+
+test_that("replace_ordinal when replace is a single value", {
+    foo = c(1, 5, 3)
+    bar = c(0, 2, 1)
+    expect_identical(replace_ordinal(foo, 0), bar)
+    
+    foo = c(1, 5, 3)
+    bar = c(10, 12, 11)
+    expect_identical(replace_ordinal(foo, 10), bar)
+    })

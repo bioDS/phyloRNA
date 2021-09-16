@@ -9,22 +9,39 @@ replace_ordinal(x, replace = NULL)
 \arguments{
 \item{x}{an object with ordinal categories}
 
-\item{replace}{\strong{optional} a vector of replacement values}
+\item{replace}{\strong{optional} a positive integer or a vector of replacement values. See \code{Details}.}
 }
 \value{
-x where all categories are present and sequential
-a sequential numeric vector
+x where categories are replaced with an numeric series of with the provided replacement
+values
 }
 \description{
 Rescale an ordinal scale to replace missing categories.
 This will assure that the currently present ordinal categories are sequential.
-Alternatively, user can provided replacement values. In such case,
-the user-provided values will be used as-is.
+}
+\details{
+By default \code{replace_ordinal} function replaces the sorted unique elements in \code{x} with a numeric
+series \code{1:n} where \code{n} is the number of categories in the data. The type of the object is
+preserved, e.g., if the object type of \code{x} is integer vector, matrix or a data.frame containing
+integers, the replacement series as well as the returning object will be integer as well.
+
+If \code{replace} has length 1 and is numeric (in the sense of \code{is.numeric}), the replacement
+series will start with \code{replace}. Typical usage might be \code{replace = 0} for a series starting
+with 0.
+
+Alternatively, user can provide vector of replacement values. This vector will be used in
+provided order and the returned object will have an elements of the requested type. The vector
+must be at least as long as the number of categories in \code{x}, but can be larger. This permits
+replacement with arbitrary categories, such as with the build-in \code{letters}.
 }
 \examples{
 foo = c(1, 3, 5)
 bar = c(1, 2, 3)
 identical(replace_ordinal(foo), bar)
+
+foo = c(1, 3, 5)
+bar = c(5, 6, 7)
+identical(replace_ordinal(foo, 5), bar)
 
 foo = c(1, 5, 3)
 bar = c("a", "c", "b")
