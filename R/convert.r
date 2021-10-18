@@ -41,7 +41,7 @@ convert = function(x, type){
 #' @rdname convert
 #' @export
 convert.default = function(x, type){
-    if (typeof(x) == type) x else as(x, type)
+    if (typeof(x) == type) x else methods::as(x, type)
     }
 
 
