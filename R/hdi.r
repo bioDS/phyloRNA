@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' x = rnorm(100)
-#' hdi(dens, alpha=0.05) # the 95% HDI
+#' hdi(x, alpha=0.05) # the 95% HDI
 #'
 #' # Alternatively, use kernel-density estimation to estimate the empirical density distribution
 #' dens = density(x)
