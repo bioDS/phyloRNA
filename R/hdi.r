@@ -9,8 +9,9 @@
 #' Also note that the HDI intervals, unlike the more common equal-tailed intervals,
 #' are not invariant under non-linear transformations.
 #'
-#' @param dens an estimated density, such as the one returned by the `[stats::density()]` function,
+#' @param x an estimated density, such as the one returned by the `[stats::density()]` function,
 #' with x and y values describing the shape of the density
+#' @param size the size of both tails or `1 - alpha`
 #' @param alpha the size of both tails or `1 - interval`
 #' @return upper and lower bounds for a selected HDI interval
 #'
@@ -21,17 +22,17 @@
 #' hdi(dens, alpha=0.5) # the 50% HDI
 #'
 #' @export
-hdi = function(dens, alpha=0.05){
+hdi = function(x, size=0.95, alpha=1-size){
     # assume that density is unimodal
-    cumul = cumsum(dens$y) / sum(dens$y)
+    cumul = cumsum(x$y) / sum(x$y)
     lower_index = upper_index = which(cumul < alpha)
     for(i in lower_index)
         upper_index[i] = min(which(cumul > cumul[i] + 1 - alpha))
     widths = upper_index - lower_index
     best = which.min(widths)
     result = c(
-        lower = mean(dens$x[lower_index[best]]),
-        upper = mean(dens$x[upper_index[best]])
+        lower = mean(x$x[lower_index[best]]),
+        upper = mean(x$x[upper_index[best]])
         )
     result
     }
