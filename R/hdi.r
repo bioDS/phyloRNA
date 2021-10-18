@@ -31,7 +31,7 @@ hdi = function(x, size=0.95, alpha=1-size){
     }
 
 
-#' rdname hdi
+#' @rdname hdi
 #' @export
 hdi.density = function(x, size=0.95, alpha=1-size){
     # assume that density is unimodal
@@ -55,7 +55,7 @@ hdi.density = function(x, size=0.95, alpha=1-size){
     }
 
 
-#' rdname hdi
+#' @rdname hdi
 #' @export
 hdi.default = function(x, size=0.95, alpha=1-size){
     n = length(x)
