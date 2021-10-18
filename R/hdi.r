@@ -61,7 +61,7 @@ hdi.default = function(x, size=0.95, alpha=1-size){
     n = length(x)
     x = sort.int(x)
     
-    window_size = ceiling(size * n)
+    window_size = ceiling((1-alpha) * n)
     
     if(window_size < 2)
         stop("Size of the highest density interval is too small or",
@@ -71,8 +71,8 @@ hdi.default = function(x, size=0.95, alpha=1-size){
              " the input vector does not contain enough data points.")
 
     
-    lower_index = seq_len(window_size)
-    upper_index = n - window_size + lower_index
+    lower_index = seq_len(n - window_size)
+    upper_index = window_size + lower_index
     best = which.min(x[upper_index] - x[lower_index])
     
     # if there are multiple best and are sequential, pick the central one
@@ -84,8 +84,8 @@ hdi.default = function(x, size=0.95, alpha=1-size){
         }
     
     result = c(
-        lower =x[lower_index[best]],
-        upper =x[upper_index[best]]
+        lower = x[lower_index[best]],
+        upper = x[upper_index[best]]
         )
     result
     }
