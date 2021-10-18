@@ -84,9 +84,9 @@ replace_ordinal = function(x, replace=NULL){
     categories = sort(unique(as.vector(unlist(x))))
 
     if(is.null(replace))
-        replace = as(seq_along(categories), typeof(categories))
+        replace = methods::as(seq_along(categories), typeof(categories))
     if(length(replace) == 1 && is.numeric(replace))
-        replace = as(seq(from=replace, along.with=categories), typeof(categories))
+        replace = methods::as(seq(from=replace, along.with=categories), typeof(categories))
     if(length(replace) < length(categories))
         stop("Not enough replacement values.")
     replace = replace[seq_along(categories)]
