@@ -4,25 +4,16 @@
 #'
 #' Somatic mutations include short nucleid variations (SNV) and insertion-deletions (inserts).
 #'
-#' @param bam one or more sam/bam files to where mutations are to be called
+#' @param bam one or more sam/bam files to where mutations are to be called and optionally
+#' matched normal samples when `Mutect2` is called in the "Tumor with Matched Normal" mode
 #' @template reference
 #' @param vcf an output `vcf` file with called mutations
-#' @param pon *optional* the Panel of Normals (see [`gatk_make_pon`])
-#' @param germline *optional* a vcf file of germline population contaning allelic fractions
-#' @param ps *optional* a parameter string passed to `gatk Mutect2` call.
+#' @param normal **optional** sample names (`RG` sam/bam tag) of the matched normal samples 
+#' @param pon **optional** the Panel of Normals (see [`gatk_make_pon`])
+#' @param germline **optional** a vcf file of germline population contaning allelic fractions
+#' @param ps **optional** a parameter string passed to `gatk Mutect2` call.
 #' @template remake
-
-#' Mapping to the Genome Analysis ToolKit (GATK)
-#'
-#' A group of functions that map to a functionality of the Broadinstitute's Genome Analysis ToolKit.
-#'
-#' @param input an input sam/bam or vcf file (in case of Mutect2 calls)
-#' @param output an output sam/bam or vcf file (in case of Mutect2 calls)
-#' @template reference
-#' @template vcf
-#' @param table  a table with recalibration information
-#' @template remake
-#' @name GATK
+#' @name gatk_mutect2
 #' @seealso
 #' [GATK] a GATK binding
 #' [GATKR6] a GATK binding in the form of R6 class
