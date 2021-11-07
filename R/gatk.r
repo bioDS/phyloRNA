@@ -189,25 +189,6 @@ gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
     }
 
 
-#' @describeIn GATK Call variants (SNVs and indels) using the Mutect2 caller
-#' @export
-gatk_Mutect2 = function(input, reference, output, remake=FALSE){
-    if(!remake && file.exists(output))
-        return(invisible())
-
-    args = c(
-        "Mutect2",
-        "-I", input,
-        "-R", reference,
-        "-O", output,
-        "--disable-adaptive-pruning" # suggested for RNA
-        )
-
-    command = getOption("phyloRNA.gatk")
-    systemE(command=command, args=args)
-    }
-
-
 #' @describeIn GATK Filter Mutect2's VCF output
 #' @export
 gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
