@@ -10,7 +10,7 @@
 #' @template remake
 #' @name GATK
 #' @seealso [GATKR6] a GATK binding in the form of R6 class,
-#' [gatk_prepare] and [gatk_snv] for a convenience functions utilizing the GATK calls
+#' [gatk_prepare], gatk_make_pon] and [gatk_snv] for a convenience functions utilizing the GATK calls
 NULL
 
 
@@ -204,4 +204,21 @@ gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
 
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
+    }
+
+#' @describeIn GATK Get a sample information (SM tag) out of input `bam` file.
+#' @export
+gatk_GetSampleName = function(input){
+    tempfile = tempfile()
+    on.exit(file.remove(tempfile))
+
+    args = c(
+        "GetSampleName",
+        "-I", input,
+        "-O", tempfile
+        )
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+
+    readLines(tempfile, warn=FALSE)
     }

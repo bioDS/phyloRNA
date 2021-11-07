@@ -9,33 +9,49 @@
 #' * `FilterMutectalls` -- filter the raw output from Mutect2
 #' * `vcftools` -- a non GATK call to preserve only single nucleotide variants
 #'
-#' @param input a sam/bam file prepared for variant calling
-#' @param output an output gzipped VCF file containing only SNVs
+#' @param bam a sam/bam file prepared for variant calling
 #' @template reference
+#' @param vcf an output gzipped `vcf` file containing only SNVs
+#' @param normal **optional** matched normal samples, either `sam/bam` files or normal sample names.
+#' If `sam` or `bam` files are provided, the sample names are retrieved from the files using the
+#' `gatk_GetSampleName`.
+#' @param pon **optional** Panel of Normals, see [`gatk_make_pon`]
+#' @param germline **optional**  a vcf file of germline population contaning allelic fractions
+#' @param ps **optional** a parameter string passed to GATK Mutect2 call
 #' @template outdir
 #' @template remake
 #'
-#' @seealso [GATK] and [GATKR6] for a binding to indiviual GATK functions,
-#' [gatk_prepare] for another convenience function build on GATK calls,
+#' @seealso
+#' [GATK] and [GATKR6] for a binding to indiviual GATK functions,
+#' [gatk_prepare] and [gatk_make_pon] for other convenience functions build on GATK calls,
 #' [vcftools_filter()] for more information on the `vcftools` call used in this function
 #' @export
-gatk_snv = function(input, reference, output, outdir=NULL, remake=FALSE){
-    if(!remake && file.exists(output))
+gatk_snv = function(
+    bam, reference, vcf,
+    normal=NULL, pon=NULL, germline=NULL, ps=NULL,
+    outdir=NULL, remake=FALSE
+    ){
+    if(!remake && file.exists(vcf))
         return(invisible())
 
-    if(is_nn(outdir))
-        outdir = file.path(dirname(output), "snv")
+    if(is.null(outdir))
+        outdir = file.path(dirname(vcf), "snv")
 
     mkdir(outdir)    
-    core = corename(input)
+    core = corename(bam)
 
-    vcf = file.path(outdir, paste0(core, ".vcf.gz"))
+    vcf_called = file.path(outdir, paste0(core, ".vcf.gz"))
     vcf_filtered = file.path(outdir, paste0(core, ".filtered.vcf.gz"))
     vcf_snv = file.path(outdir, paste0(core, ".snv.vcf"))
 
-    gatk_BuildBamIndex(input, remake)
-    gatk_Mutect2(input, reference, vcf, remake)
-    gatk_FilterMutectCalls(vcf, reference, vcf_filtered, remake)
+    if(!is.null(normal) && all(endsWith(normal, ".sam") | endsWith(normal, ".bam"))){
+        bam = c(bam, normal)
+        normal = sapply(gatk_GetSampleName, normal)
+        }
+
+    gatk_BuildBamIndex(bam, remake)
+    gatk_Mutect2(bam, reference, vcf_called, normal, pon, germline, ps, remake)
+    gatk_FilterMutectCalls(vcf_called, reference, vcf_filtered, remake)
     vcftools_filter(vcf_filtered, vcf_snv, remake)
-    file.copy(vcf_snv, output, overwrite=TRUE)
+    file.copy(vcf_snv, vcf, overwrite=TRUE)
     }
