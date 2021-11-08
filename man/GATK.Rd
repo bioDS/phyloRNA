@@ -11,8 +11,8 @@
 \alias{gatk_BuildBamIndex}
 \alias{gatk_FilterSamReadsTag}
 \alias{gatk_MergeSamFiles}
-\alias{gatk_Mutect2}
 \alias{gatk_FilterMutectCalls}
+\alias{gatk_GetSampleName}
 \title{Mapping to the Genome Analysis ToolKit (GATK)}
 \usage{
 gatk_MarkDuplicates(input, output, remake = FALSE)
@@ -33,9 +33,9 @@ gatk_FilterSamReadsTag(input, output, tag, values, remake = FALSE)
 
 gatk_MergeSamFiles(inputs, output, remake = FALSE)
 
-gatk_Mutect2(input, reference, output, remake = FALSE)
-
 gatk_FilterMutectCalls(input, reference, output, remake = FALSE)
+
+gatk_GetSampleName(input)
 }
 \arguments{
 \item{input}{an input sam/bam or vcf file (in case of Mutect2 calls)}
@@ -81,12 +81,12 @@ scores from the \verb{[gatk_BaseRecalibrator]}
 
 \item \code{gatk_MergeSamFiles}: Merge multiple sam/bam files
 
-\item \code{gatk_Mutect2}: Call variants (SNVs and indels) using the Mutect2 caller
-
 \item \code{gatk_FilterMutectCalls}: Filter Mutect2's VCF output
+
+\item \code{gatk_GetSampleName}: Get a sample information (SM tag) out of input \code{bam} file.
 }}
 
 \seealso{
 \link{GATKR6} a GATK binding in the form of R6 class,
-\link{gatk_prepare} and \link{gatk_snv} for a convenience functions utilizing the GATK calls
+\link{gatk_prepare}, gatk_make_pon] and \link{gatk_snv} for a convenience functions utilizing the GATK calls
 }

@@ -4,14 +4,34 @@
 \alias{gatk_snv}
 \title{Identify and filter SNVs}
 \usage{
-gatk_snv(input, reference, output, outdir = NULL, remake = FALSE)
+gatk_snv(
+  bam,
+  reference,
+  vcf,
+  normal = NULL,
+  pon = NULL,
+  germline = NULL,
+  ps = NULL,
+  outdir = NULL,
+  remake = FALSE
+)
 }
 \arguments{
-\item{input}{a sam/bam file prepared for variant calling}
+\item{bam}{a sam/bam file prepared for variant calling}
 
 \item{reference}{a reference fasta (\code{.fas}) file to which the sam/bam file was mapped}
 
-\item{output}{an output gzipped VCF file containing only SNVs}
+\item{vcf}{an output gzipped \code{vcf} file containing only SNVs}
+
+\item{normal}{\strong{optional} matched normal samples, either \code{sam/bam} files or normal sample names.
+If \code{sam} or \code{bam} files are provided, the sample names are retrieved from the files using the
+\code{gatk_GetSampleName}.}
+
+\item{pon}{\strong{optional} Panel of Normals, see \code{\link{gatk_make_pon}}}
+
+\item{germline}{\strong{optional}  a vcf file of germline population contaning allelic fractions}
+
+\item{ps}{\strong{optional} a parameter string passed to GATK Mutect2 call}
 
 \item{outdir}{\strong{optional} an output directory for intermediate files}
 
@@ -31,6 +51,6 @@ SNVs. Following steps are performed:
 }
 \seealso{
 \link{GATK} and \link{GATKR6} for a binding to indiviual GATK functions,
-\link{gatk_prepare} for another convenience function build on GATK calls,
+\link{gatk_prepare} and \link{gatk_make_pon} for other convenience functions build on GATK calls,
 \code{\link[=vcftools_filter]{vcftools_filter()}} for more information on the \code{vcftools} call used in this function
 }

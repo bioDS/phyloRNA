@@ -10,7 +10,7 @@
 #' @template remake
 #' @name GATK
 #' @seealso [GATKR6] a GATK binding in the form of R6 class,
-#' [gatk_prepare] and [gatk_snv] for a convenience functions utilizing the GATK calls
+#' [gatk_prepare], gatk_make_pon] and [gatk_snv] for a convenience functions utilizing the GATK calls
 NULL
 
 
@@ -189,25 +189,6 @@ gatk_MergeSamFiles = function(inputs, output, remake=FALSE){
     }
 
 
-#' @describeIn GATK Call variants (SNVs and indels) using the Mutect2 caller
-#' @export
-gatk_Mutect2 = function(input, reference, output, remake=FALSE){
-    if(!remake && file.exists(output))
-        return(invisible())
-
-    args = c(
-        "Mutect2",
-        "-I", input,
-        "-R", reference,
-        "-O", output,
-        "--disable-adaptive-pruning" # suggested for RNA
-        )
-
-    command = getOption("phyloRNA.gatk")
-    systemE(command=command, args=args)
-    }
-
-
 #' @describeIn GATK Filter Mutect2's VCF output
 #' @export
 gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
@@ -223,4 +204,21 @@ gatk_FilterMutectCalls = function(input, reference, output, remake=FALSE){
 
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
+    }
+
+#' @describeIn GATK Get a sample information (SM tag) out of input `bam` file.
+#' @export
+gatk_GetSampleName = function(input){
+    tempfile = tempfile()
+    on.exit(file.remove(tempfile))
+
+    args = c(
+        "GetSampleName",
+        "-I", input,
+        "-O", tempfile
+        )
+    command = getOption("phyloRNA.gatk")
+    systemE(command=command, args=args)
+
+    readLines(tempfile, warn=FALSE)
     }
