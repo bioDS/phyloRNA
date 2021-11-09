@@ -46,6 +46,8 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FA
 #' @template remake
 #' @template nthreads
 #'
+#' @param id an id that identifies the sample, this will be embedded in the read-groups (`RG` tag)
+#'    of the header and reads of the bam-file.
 #' @param fastqdir a dir with fastq files prepared with [bamtofastq]
 #' @param refdir a directory with the reference files created by the [cellranger_mkref]
 #' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
@@ -55,20 +57,45 @@ cellranger_mkref = function(reference, annotation, outdir, nthreads=4, remake=FA
 #' @seealso [cellranger_mkref] to create the required reference genome directory (`refdir`)
 #'          [bamtofastq] to transform mapped BAM file back into fasta files for remapping
 #' @export
-cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads=4, sample=NULL, remake=FALSE){
-    statusfile = file.path(outdir, "completed")
+cellranger_count = function(
+    id, fastqdir, refdir, outdir=".",
+    chemistry="auto", nthreads=4, sample=NULL, remake=FALSE
+    ){
+    # Sets a reasonable defaults and behaviour for outdir
+    if(abspath(outdir) == getwd()) # checks for "." "./" etc
+        outdir = file.path(outdir, gsub(".", "_", id, fixed=TRUE))
+
+    statusfile = file.path(outdir, paste0(id, ".completed"))
     if(file.exists(statusfile) && !remake)
         return(invisible())
     if(file.exists(statusfile) && remake)
         unlink(outdir, recursive=TRUE, force=TRUE)
+
+
+    # Check if outdir and outpath already exists
     if(dir.exists(outdir))
         stop("The directory ", outdir, " already exists.")
+        
+    # This is the directory where cellranger actually saves files
+    outpath = file.path(dirname(outdir), id)
+
+    # If outpath is different for outdir and outpath exists, we need to make outpath unique:
+    expanded = FALSE
+    if(outdir != outpath && dir.exists(outpath)){
+        tempdir = paste0("temp", random_string(8, 4, 4))
+        outpath = file.path(dirname(outdir), paste0(tempdir, id))
+        expanded = TRUE
+        }
+
+    # The outpath should be a unique non-existing directory
+    if(dir.exists(outpath))
+        stop("The directory ", outpath, " already exists. This is unexpected.")
 
     args = c(
         "count",
         paste0("--fastqs=", abspath(fastqdir)),
         paste0("--transcriptome=", abspath(refdir)),
-        paste0("--id=", basename(outdir)),
+        paste0("--id=", id),
         paste0("--localcores=", nthreads),
         paste0("--chemistry=", chemistry)
         )
@@ -76,6 +103,15 @@ cellranger_count = function(fastqdir, refdir, outdir, chemistry="auto", nthreads
         args = c(args, paste0("--sample=", sample))
 
     command = getOption("phyloRNA.cellranger")
-    systemE(command, args, call=TRUE, dir=abspath(dirname(outdir)))
+    systemE(command, args, call=TRUE, dir=abspath(dirname(outpath)))
+
+    # Rename the output folder if necessary
+    if(outpath != outdir)
+        file.rename(outpath, outdir)
+
+    # Clean the outpath folder if expanded with tempdir
+    if(expanded)
+        unlink(dirname(outpath))
+
     file.create(statusfile)
     }

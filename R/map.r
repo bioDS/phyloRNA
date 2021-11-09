@@ -29,28 +29,35 @@
 #' @param fastqdir **optional** a directory for the [bamtofastq], see details
 #' @param refdir **optional a directory for the [cellranger_mkref], see details
 #' @param countdir **optional** a directory for the [cellranger_count], see details
+#' @param id **optional** an id that identifies the sample, this will be embedded in the
+#'      read-groups (`RG` tag) of the header and reads of the bam-file. If not specified,
+#'      it is derived from the input bam file
 #' @param chemistry **optional** a 10X chemistry, use only when the autodetection is failing
 #' @param copy_bam **optional** a TRUE value or file path to a location where the re-mapped bam file
-#' will be copied 
+#'      will be copied 
 #' @param copy_bar **optional** a TRUE value or file path to a location where the file with filtered
-#' barcodes will be copied
+#'      barcodes will be copied
 #' @param copy_h5 **optional** a TRUE value or file path to a location where the `.h5` expression
-#' count matrix will be copied.
+#'      count matrix will be copied.
 #' @seealso [bamtofastq], [cellranger_mkref] and [cellranger_count] for details on the steps
-#' performed by the `remap` function.
+#'      performed by the `remap` function.
 #' @export 
 remap = function(
     input, reference, annotation, outdir,
     fastqdir=NULL, refdir=NULL, countdir=NULL,
-    nthreads=4, chemistry="auto", remake=FALSE,
+    id=NULL, nthreads=4, chemistry="auto", remake=FALSE,
     copy_bam=FALSE, copy_bar=FALSE, copy_h5=FALSE
     ){
-    if(is_nn(refdir))
-        refdir = file.path(outdir, "ref")
-    if(is_nn(countdir))
-        countdir = file.path(outdir, "count")
-    if(is_nn(fastqdir))
+    prefix = corename(input)
+
+    if(is.null(fastqdir))
         fastqdir = file.path(outdir, "fastq")
+    if(is.null(refdir))
+        refdir = file.path(outdir, "ref")
+    if(is.null(countdir))
+        countdir = file.path(outdir, "count")
+    if(is.null(id)
+        id = prefix
 
     mkdir(outdir)
 
@@ -67,6 +74,7 @@ remap = function(
         remake = remake
         )
     cellranger_count(
+        id = id,
         fastqdir = fastqdir,
         refdir = refdir,
         outdir = countdir,
@@ -75,7 +83,6 @@ remap = function(
         remake = remake
         )
 
-    prefix = corename(input)
     cellranger_bam = file.path(countdir, "outs", "possorted_genome_bam.bam")
     cellranger_bar = file.path(countdir, "outs", "filtered_feature_bc_matrix", "barcodes.tsv.gz")
     cellranger_h5 = file.path(countdir, "outs", "filtered_feature_bc_matrix.h5")
@@ -86,7 +93,7 @@ remap = function(
         file.copy(cellranger_bam, copy_bam, overwrite=remake)
 
     if(isTRUE(copy_bar))
-        copy_bar = file.path(outdir, paste0(prefix, ".barcodes.txt"))
+        copy_bar = file.path(outdir, paste0(prefix, ".barcodes.txt.gz"))
     if(is.character(copy_bar))
         file.copy(cellranger_bar, copy_bar, overwrite=remake)
 
