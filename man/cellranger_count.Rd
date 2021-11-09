@@ -5,9 +5,10 @@
 \title{Estimate scRNAseq Gene Expression with Cellranger Count}
 \usage{
 cellranger_count(
+  id,
   fastqdir,
   refdir,
-  outdir,
+  outdir = ".",
   chemistry = "auto",
   nthreads = 4,
   sample = NULL,
@@ -15,6 +16,9 @@ cellranger_count(
 )
 }
 \arguments{
+\item{id}{an id that identifies the sample, this will be embedded in the read-groups (\code{RG} tag)
+of the header and reads of the bam-file.}
+
 \item{fastqdir}{a dir with fastq files prepared with \link{bamtofastq}}
 
 \item{refdir}{a directory with the reference files created by the \link{cellranger_mkref}}
