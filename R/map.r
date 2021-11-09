@@ -56,7 +56,7 @@ remap = function(
         refdir = file.path(outdir, "ref")
     if(is.null(countdir))
         countdir = file.path(outdir, "count")
-    if(is.null(id)
+    if(is.null(id))
         id = prefix
 
     mkdir(outdir)
