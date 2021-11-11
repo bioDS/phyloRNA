@@ -12,6 +12,7 @@ remap(
   fastqdir = NULL,
   refdir = NULL,
   countdir = NULL,
+  id = NULL,
   nthreads = 4,
   chemistry = "auto",
   remake = FALSE,
@@ -34,6 +35,10 @@ remap(
 \item{refdir}{**optional a directory for the \link{cellranger_mkref}, see details}
 
 \item{countdir}{\strong{optional} a directory for the \link{cellranger_count}, see details}
+
+\item{id}{\strong{optional} an id that identifies the sample, this will be embedded in the
+read-groups (\code{RG} tag) of the header and reads of the bam-file. If not specified,
+it is derived from the input bam file}
 
 \item{nthreads}{\strong{optional} a number of threads to run on}
 
