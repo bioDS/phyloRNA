@@ -73,15 +73,19 @@ cellranger_count = function(
         )
 
     statusfile = file.path(outdir, paste0(id, ".completed"))
+    errmsg = paste0(
+        "After the run, one or more of the output files (bam, h5, barcodes)",
+        " do not exist. This suggests that there might be a problem with",
+        " the run. Inspect the content of the ", outdir, " folder and",
+        " rerun the analysis."
+        )
 
     # Early exit conditions:
     if(file.exists(statusfile) && !remake && all_files_exist(outfiles))
         return(invisible(outfiles))
 
     if(file.exists(statusfile) && !remake && !all_files_exist(outfiles))
-        stop("The status file exists, but one or more of the output files",
-             " (bam, h5 and barcodes) is missing. This suggest that there",
-             " might be a problem with the run.")
+        stop(errmsg)
 
     if(file.exists(statusfile) && remake)
         unlink(outdir, recursive=TRUE, force=TRUE)
@@ -126,6 +130,9 @@ cellranger_count = function(
     # Clean the outpath folder if expanded with tempdir
     if(expanded)
         unlink(dirname(outpath))
+
+    if(!all_files_exist(outfiles))
+        stop(errmsg)
 
     file.create(statusfile)
 
