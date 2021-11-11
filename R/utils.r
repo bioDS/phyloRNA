@@ -101,26 +101,24 @@ missing_to_na = function(x, missing){
     x
     }
 
-#' Check existence of files
+#' Check if all specified files exist
 #'
 #' This function checks the existence of all files stored in a vector or a list.
 #'
-#' `all.files.exist` is a simple shorthand around [`base::file.exists`] wrapped with an additional
+#' `all_files_exist` is a simple shorthand around [`base::file.exists`] wrapped with an additional
 #' [`base::all`] to return a single value. This makes this function useful when checking that all
 #' files required for or created by some function exist.
-#'
-#' @usage all.files.exist(x)
 #'
 #' @param x a vector or list of files.
 #' @return a logical value indicating if all files exist.
 #'
 #' @examples
 #' files = c(tempfile(), tempfile())
-#' all.files.exist(files) # FALSE
+#' all_files_exist(files) # FALSE
 #' file.create(files)
-#' all.files.exist(files) # TRUE
+#' all_files_exist(files) # TRUE
 #'
-#' @export all.files.exist
-all.files.exist = function(x){
+#' @export
+all_files_exist = function(x){
     all(file.exists(unlist(x)))
     }

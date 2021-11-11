@@ -109,16 +109,16 @@ test_that("missing_to_na transform a custom missing value to the NA", {
     })
 
 
-test_that("all.files.exist works", {
+test_that("all_files_exist works", {
     files = replicate(4, tempfile())
 
-    expect_false(all.files.exist(files))
+    expect_false(all_files_exist(files))
 
     file.create(files[1])
-    expect_false(all.files.exist(files))
+    expect_false(all_files_exist(files))
 
     file.create(files)
-    expect_true(all.files.exist(files))
+    expect_true(all_files_exist(files))
 
     unlink(files)
     })
