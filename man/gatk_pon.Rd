@@ -3,13 +3,13 @@
 \name{gatk_pon}
 \alias{gatk_pon}
 \alias{gatk_make_pon}
-\alias{gatk_GenomicDBIImport}
+\alias{gatk_GenomicsDBImport}
 \alias{gatk_CreateSomaticPanelOfNormals}
 \title{Make a Panel of Normals using the GATK toolkit}
 \usage{
 gatk_make_pon(bam, reference, vcf, outdir = "pon", remake = FALSE)
 
-gatk_GenomicDBIImport(vcf, reference, database, remake = remake)
+gatk_GenomicsDBImport(vcf, reference, database, remake = remake)
 
 gatk_CreateSomaticPanelOfNormals(database, reference, vcf, remake = FALSE)
 }
@@ -19,14 +19,14 @@ gatk_CreateSomaticPanelOfNormals(database, reference, vcf, remake = FALSE)
 \item{reference}{a reference genome that was used during mapping of the sam/bam files}
 
 \item{vcf}{a variant call file, either one or more vcf to be merged into a database
-(for \code{gatk_GenomicDBIImport}) or an output vcf with Panel of Normals (for \code{gatk_make_pon} and
+(for \code{gatk_GenomicsDBImport}) or an output vcf with Panel of Normals (for \code{gatk_make_pon} and
 \code{gatk_CreateSomaticPanelOfNormals})}
 
 \item{outdir}{\strong{optional} outdir an output directory for intermediate files}
 
 \item{remake}{\strong{optional} remake the output if it already exists}
 
-\item{database}{a name of the database file created by \code{gatk_GenomicDBIImport} and used in
+\item{database}{a name of the database file created by \code{gatk_GenomicsDBImport} and used in
 \code{gatk_CreateSomaticPanelOfNormals}.}
 }
 \description{
@@ -39,7 +39,7 @@ using the \code{gatk_Mutect2} in a tumour-only mode, the resulting \code{vcf} fi
 a database using the \code{gatk_GenomicDBIImport} and then a the Panel of Normals is created using the
 \code{gatk_CreateSomaticPanelOfNormals}.
 
-\code{gatk_GenomicDBIImport} merges multiple variant call files (\code{vcf}), such as those created by
+\code{gatk_GenomicsDBImport} merges multiple variant call files (\code{vcf}), such as those created by
 \code{gatk_Mutect2}, into a database. This database can be used to create a Panel of Normals using
 the \code{gatk_CreateSomaticPanelOfNormals} call.
 

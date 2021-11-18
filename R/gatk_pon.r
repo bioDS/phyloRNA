@@ -7,9 +7,9 @@
 #' @param bam one or more input sam/bam files
 #' @param reference a reference genome that was used during mapping of the sam/bam files
 #' @param vcf a variant call file, either one or more vcf to be merged into a database
-#' (for `gatk_GenomicDBIImport`) or an output vcf with Panel of Normals (for `gatk_make_pon` and
+#' (for `gatk_GenomicsDBImport`) or an output vcf with Panel of Normals (for `gatk_make_pon` and
 #' `gatk_CreateSomaticPanelOfNormals`)
-#' @param database a name of the database file created by `gatk_GenomicDBIImport` and used in
+#' @param database a name of the database file created by `gatk_GenomicsDBImport` and used in
 #' `gatk_CreateSomaticPanelOfNormals`. 
 #' @param outdir **optional** outdir an output directory for intermediate files
 #' @template remake
@@ -40,7 +40,7 @@ gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
 
 
     # Connect them into genomic database
-    gatk_GenomicDBIImport(vcfs, reference=reference, database=database, remake=remake)
+    gatk_GenomicsDBImport(vcfs, reference=reference, database=database, remake=remake)
     # Create PON VCF from database
     gatk_CreateSomaticPanelOfNormals(database=database, reference=reference, vcf=vcf)
     }
@@ -49,17 +49,17 @@ gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
 #' @rdname gatk_pon
 #'
 #' @details
-#' `gatk_GenomicDBIImport` merges multiple variant call files (`vcf`), such as those created by
+#' `gatk_GenomicsDBImport` merges multiple variant call files (`vcf`), such as those created by
 #' `gatk_Mutect2`, into a database. This database can be used to create a Panel of Normals using
 #' the `gatk_CreateSomaticPanelOfNormals` call.
 #'
 #' @export
-gatk_GenomicDBIImport = function(vcf, reference, database, remake=remake){
+gatk_GenomicsDBImport = function(vcf, reference, database, remake=remake){
     if(!remake && file.exists(database))
         return(invisible())
 
     args = c(
-        "GenomicDBIImport",
+        "GenomicsDBImport",
         paste("-V", vcf),
         "-R", reference,
         "--genomicsdb-workspace-path", database
