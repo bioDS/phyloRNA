@@ -21,12 +21,17 @@
 #' @template reference
 #' @template vcf
 #' @template outdir
+#' @param clean **optional** clean intermediate files
 #' @template remake
 #'
 #' @seealso [GATK] and [GATKR6] for a binding to individual GATK functions,
 #' [gatk_snv] for another convenience function build on GATK calls
 #' @export
-gatk_prepare = function(input, output, reference, vcf, barcodes=NULL, outdir=NULL, remake=FALSE){
+gatk_prepare = function(
+    input, output, reference, vcf,
+    barcodes = NULL, outdir = NULL,
+    clean = TRUE, remake = FALSE
+    ){
     if(!remake && file.exists(output))
         return(invisible())
 
@@ -48,6 +53,12 @@ gatk_prepare = function(input, output, reference, vcf, barcodes=NULL, outdir=NUL
         }
 
     # sort, split cigar, recalibrate:
-    bam$SortSam()$SplitNCigarReads()$Recalibrate()
+    bam$SortSam()$SplitNCigarReads()$Recalibrate()$clean()
     file.copy(bam$bam, output, overwrite=TRUE)
+    file.remove(bam$bam)
+
+    if(clean && dir.exists(outdir) && length(dir(outdir)) == 0)
+        unlink(outdir)
+
+    invisible()
     }

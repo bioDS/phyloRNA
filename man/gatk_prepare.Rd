@@ -11,6 +11,7 @@ gatk_prepare(
   vcf,
   barcodes = NULL,
   outdir = NULL,
+  clean = TRUE,
   remake = FALSE
 )
 }
@@ -26,6 +27,8 @@ gatk_prepare(
 \item{barcodes}{\strong{optional} file with cell barcodes to preserve}
 
 \item{outdir}{\strong{optional} an output directory for intermediate files}
+
+\item{clean}{\strong{optional} clean intermediate files}
 
 \item{remake}{\strong{optional} remake the output if it already exists}
 }

@@ -52,6 +52,7 @@ the result of the last GATK action.}
 \item \href{#method-SplitNCigarReads}{\code{GATKR6$SplitNCigarReads()}}
 \item \href{#method-Recalibrate}{\code{GATKR6$Recalibrate()}}
 \item \href{#method-FilterSamReadsTag}{\code{GATKR6$FilterSamReadsTag()}}
+\item \href{#method-clean}{\code{GATKR6$clean()}}
 \item \href{#method-clone}{\code{GATKR6$clone()}}
 }
 }
@@ -173,6 +174,19 @@ Filter the sam/bam file according to tag and its values.
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clean"></a>}}
+\if{latex}{\out{\hypertarget{method-clean}{}}}
+\subsection{Method \code{clean()}}{
+Clean all intermediate files
+
+Intermediate files are all files except the original bam file used during
+the initialization of the \code{GATKR6} object and the current bam file.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GATKR6$clean()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

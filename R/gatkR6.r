@@ -146,6 +146,22 @@ GATKR6 = R6::R6Class("GATK",
             self$bam = output
 
             invisible(self)
+            },
+
+        #' @description
+        #' Clean all intermediate files
+        #'
+        #' Intermediate files are all files except the original bam file used during
+        #' the initialization of the `GATKR6` object and the current bam file.
+        clean = function(){
+            file_types = c("input", "output", "table")
+            files = unlist(lapply(bam$history, "[", file_types))
+            files = files[!files %in% c(self$original, self$bam)]
+            file.remove(files[file.exists(files)])
+
+            self$history = c(self$history, list("call"=sys.call()))
+
+            invisible(self)
             }
         ),
 
