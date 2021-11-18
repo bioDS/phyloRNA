@@ -26,7 +26,7 @@ NULL
 #'
 #' @export
 gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
-    if(!remake || file.exists(vcf))
+    if(!remake && file.exists(vcf))
         return(invisible())
 
     mkdir(outdir)
