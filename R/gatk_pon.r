@@ -38,6 +38,7 @@ gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
         gatk_Mutect2(bam=x, reference=reference, vcf=y, ps="-max-mnp-distance 0", remake=remake)
         }
 
+    Map(gatk_Mutect2_partial, bam, vcfs)
 
     # Connect them into genomic database
     gatk_GenomicsDBImport(vcfs, reference=reference, database=database, remake=remake)
