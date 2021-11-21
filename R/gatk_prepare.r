@@ -53,7 +53,11 @@ gatk_prepare = function(
         }
 
     # sort, split cigar, recalibrate:
-    bam$SortSam()$SplitNCigarReads()$Recalibrate()$clean()
+    bam$SortSam()$SplitNCigarReads()$Recalibrate()
+
+    if(clean)
+        bam$clean()
+
     file.copy(bam$bam, output, overwrite=TRUE)
     file.remove(bam$bam)
 
