@@ -65,7 +65,7 @@ gatk_GenomicsDBImport = function(vcf, reference, database, intervals=NULL, remak
 
     if(is.null(intervals)){
         chromosomes = read_column(paste0(reference, ".fai"), sep="\t")
-        intervals = tempfile("intervals_")
+        intervals = tempfile(fileext=".intervals")
         writeLines(chromosomes, intervals)
         on.exit(file.remove(intervals))
         }
