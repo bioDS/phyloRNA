@@ -122,3 +122,16 @@ missing_to_na = function(x, missing){
 all_files_exist = function(x){
     all(file.exists(unlist(x)))
     }
+
+
+#' Read a column from a delimited file
+#'
+#' Read a k-th column from a delimited file.
+#' @param x a path to a file
+#' @param k **optional** a integer value of a column that will be returned
+#' @param sep **optional** a separator that separate the columns
+#' @return a character vector
+read_column = function(x, k=1L, sep=" "){
+    x = readLines(x)
+    vapply(x, function(y){strsplit(x, split=sep)[[1]][k]}, character(1), USE.NAMES=FALSE)
+    }

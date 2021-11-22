@@ -12,6 +12,9 @@
 #' @param database a name of the database file created by `gatk_GenomicsDBImport` and used in
 #' `gatk_CreateSomaticPanelOfNormals`. 
 #' @param outdir **optional** outdir an output directory for intermediate files
+#' @param intervals **optional** a character string or a file (one line per file) of genomic
+#' segments over which to operate. If not provided, these itnervals are derived from the reference
+#' `.fai` file.
 #' @template remake
 NULL
 
@@ -25,7 +28,7 @@ NULL
 #' `gatk_CreateSomaticPanelOfNormals`.
 #'
 #' @export
-gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
+gatk_make_pon = function(bam, reference, vcf, outdir="pon", intervals=NULL, remake=FALSE){
     if(!remake && file.exists(vcf))
         return(invisible())
 
@@ -41,7 +44,8 @@ gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
     Map(gatk_Mutect2_partial, bam, vcfs)
 
     # Connect them into genomic database
-    gatk_GenomicsDBImport(vcfs, reference=reference, database=database, remake=remake)
+    gatk_GenomicsDBImport(vcfs, reference=reference, database=database, intervals=intervals,
+                          remake=remake)
     # Create PON VCF from database
     gatk_CreateSomaticPanelOfNormals(database=database, reference=reference, vcf=vcf)
     }
@@ -55,15 +59,24 @@ gatk_make_pon = function(bam, reference, vcf, outdir="pon", remake=FALSE){
 #' the `gatk_CreateSomaticPanelOfNormals` call.
 #'
 #' @export
-gatk_GenomicsDBImport = function(vcf, reference, database, remake=remake){
+gatk_GenomicsDBImport = function(vcf, reference, database, intervals=NULL, remake=FALSE){
     if(!remake && file.exists(database))
         return(invisible())
+
+    if(is.null(intervals)){
+        chromosomes = read_column(paste0(reference, ".fai"), sep="\t")
+        intervals = tempfile("intervals_")
+        writeLines(chromosomes, intervals)
+        on.exit(file.remove(intervals))
+        }
+        
 
     args = c(
         "GenomicsDBImport",
         paste("-V", vcf),
         "-R", reference,
-        "--genomicsdb-workspace-path", database
+        "--genomicsdb-workspace-path", database,
+        "--intervals", intervals
         )
     command = getOption("phyloRNA.gatk")
     systemE(command, args)

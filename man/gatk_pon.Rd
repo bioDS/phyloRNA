@@ -7,9 +7,22 @@
 \alias{gatk_CreateSomaticPanelOfNormals}
 \title{Make a Panel of Normals using the GATK toolkit}
 \usage{
-gatk_make_pon(bam, reference, vcf, outdir = "pon", remake = FALSE)
+gatk_make_pon(
+  bam,
+  reference,
+  vcf,
+  outdir = "pon",
+  intervals = NULL,
+  remake = FALSE
+)
 
-gatk_GenomicsDBImport(vcf, reference, database, remake = remake)
+gatk_GenomicsDBImport(
+  vcf,
+  reference,
+  database,
+  intervals = NULL,
+  remake = FALSE
+)
 
 gatk_CreateSomaticPanelOfNormals(database, reference, vcf, remake = FALSE)
 }
@@ -23,6 +36,10 @@ gatk_CreateSomaticPanelOfNormals(database, reference, vcf, remake = FALSE)
 \code{gatk_CreateSomaticPanelOfNormals})}
 
 \item{outdir}{\strong{optional} outdir an output directory for intermediate files}
+
+\item{intervals}{\strong{optional} a character string or a file (one line per file) of genomic
+segments over which to operate. If not provided, these itnervals are derived from the reference
+\code{.fai} file.}
 
 \item{remake}{\strong{optional} remake the output if it already exists}
 
