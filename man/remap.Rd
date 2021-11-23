@@ -55,6 +55,9 @@ barcodes will be copied}
 \item{copy_h5}{\strong{optional} a TRUE value or file path to a location where the \code{.h5} expression
 count matrix will be copied.}
 }
+\value{
+a list of paths to the original or copied bam, barcodes and h5 files.
+}
 \description{
 This function will remap a bam file previously mapped by the Cellranger software to a new genome.
 }
