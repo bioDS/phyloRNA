@@ -163,6 +163,7 @@ GATKR6 = R6::R6Class("GATK",
             
             # Also remove .bai files (.bam.bai)
             bai = files[endsWith(files, ".bam")]
+            bai = tools::file_path_sans_ext(bai)
             bai = paste0(bai, ".bai")
             files = c(files, bai)
 
