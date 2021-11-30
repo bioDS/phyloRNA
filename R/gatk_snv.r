@@ -46,7 +46,7 @@ gatk_snv = function(
 
     if(!is.null(normal) && all(endsWith(normal, ".sam") | endsWith(normal, ".bam"))){
         bam = c(bam, normal)
-        normal = sapply(gatk_GetSampleName, normal)
+        normal = sapply(normal, gatk_GetSampleName)
         }
 
     gatk_BuildBamIndex(bam, remake)
