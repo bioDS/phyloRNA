@@ -49,7 +49,7 @@ gatk_snv = function(
         normal = sapply(normal, gatk_GetSampleName)
         }
 
-    gatk_BuildBamIndex(bam, remake)
+    Map(gatk_BuildBamIndex, bam, remake)
     gatk_Mutect2(bam, reference, vcf_called, normal, pon, germline, ps, remake)
     gatk_FilterMutectCalls(vcf_called, reference, vcf_filtered, remake)
     vcftools_filter(vcf_filtered, vcf_snv, remake)
