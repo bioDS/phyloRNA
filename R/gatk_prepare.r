@@ -35,7 +35,7 @@ gatk_prepare = function(
     if(!remake && file.exists(output))
         return(invisible())
 
-    if(!is_nn(outdir))
+    if(is.null(outdir))
         outdir = file.path(dirname(output), "gatk")
 
     bam = GATKR6$new(
