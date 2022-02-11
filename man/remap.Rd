@@ -12,6 +12,7 @@ remap(
   fastqdir = NULL,
   refdir = NULL,
   countdir = NULL,
+  id = NULL,
   nthreads = 4,
   chemistry = "auto",
   remake = FALSE,
@@ -35,6 +36,10 @@ remap(
 
 \item{countdir}{\strong{optional} a directory for the \link{cellranger_count}, see details}
 
+\item{id}{\strong{optional} an id that identifies the sample, this will be embedded in the
+read-groups (\code{RG} tag) of the header and reads of the bam-file. If not specified,
+it is derived from the input bam file}
+
 \item{nthreads}{\strong{optional} a number of threads to run on}
 
 \item{chemistry}{\strong{optional} a 10X chemistry, use only when the autodetection is failing}
@@ -49,6 +54,9 @@ barcodes will be copied}
 
 \item{copy_h5}{\strong{optional} a TRUE value or file path to a location where the \code{.h5} expression
 count matrix will be copied.}
+}
+\value{
+a list of paths to the original or copied bam, barcodes and h5 files.
 }
 \description{
 This function will remap a bam file previously mapped by the Cellranger software to a new genome.

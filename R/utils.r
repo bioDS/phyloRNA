@@ -100,3 +100,38 @@ missing_to_na = function(x, missing){
     x[x == missing] = NA
     x
     }
+
+#' Check if all specified files exist
+#'
+#' This function checks the existence of all files stored in a vector or a list.
+#'
+#' `all_files_exist` is a simple shorthand around [`base::file.exists`] wrapped with an additional
+#' [`base::all`] to return a single value. This makes this function useful when checking that all
+#' files required for or created by some function exist.
+#'
+#' @param x a vector or list of files.
+#' @return a logical value indicating if all files exist.
+#'
+#' @examples
+#' files = c(tempfile(), tempfile())
+#' all_files_exist(files) # FALSE
+#' file.create(files)
+#' all_files_exist(files) # TRUE
+#'
+#' @export
+all_files_exist = function(x){
+    all(file.exists(unlist(x)))
+    }
+
+
+#' Read a column from a delimited file
+#'
+#' Read a k-th column from a delimited file.
+#' @param x a path to a file
+#' @param k **optional** a integer value of a column that will be returned
+#' @param sep **optional** a separator that separate the columns
+#' @return a character vector
+read_column = function(x, k=1L, sep=" "){
+    x = readLines(x)
+    vapply(x, function(y){strsplit(x, split=sep)[[1]][k]}, character(1), USE.NAMES=FALSE)
+    }

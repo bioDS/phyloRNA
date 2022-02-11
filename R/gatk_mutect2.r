@@ -43,6 +43,9 @@ gatk_Mutect2 = function(
     if(!is.null(germline))
         args = c(args, "--germline-resource", germline)
 
+    # Build BAM indices if they don't exist
+    Map(gatk_BuildBamIndex, bam)
+
     command = getOption("phyloRNA.gatk")
     systemE(command=command, args=args)
     }

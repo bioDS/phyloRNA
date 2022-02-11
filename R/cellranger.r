@@ -65,12 +65,30 @@ cellranger_count = function(
     if(abspath(outdir) == getwd()) # checks for "." "./" etc
         outdir = file.path(outdir, gsub(".", "_", id, fixed=TRUE))
 
+    # define path to useful files: bam, h5 and barcodes
+    outfiles = list(
+        "bam" = file.path(outdir, "outs", "possorted_genome_bam.bam"),
+        "h5" = file.path(outdir, "outs", "filtered_feature_bc_matrix.h5"),
+        "barcodes" = file.path(outdir, "outs", "filtered_feature_bc_matrix", "barcodes.tsv.gz")
+        )
+
     statusfile = file.path(outdir, paste0(id, ".completed"))
-    if(file.exists(statusfile) && !remake)
-        return(invisible())
+    errmsg = paste0(
+        "After the run, one or more of the output files (bam, h5, barcodes)",
+        " do not exist. This suggests that there might be a problem with",
+        " the run. Inspect the content of the ", outdir, " folder and",
+        " rerun the analysis."
+        )
+
+    # Early exit conditions:
+    if(file.exists(statusfile) && !remake && all_files_exist(outfiles))
+        return(invisible(outfiles))
+
+    if(file.exists(statusfile) && !remake && !all_files_exist(outfiles))
+        stop(errmsg)
+
     if(file.exists(statusfile) && remake)
         unlink(outdir, recursive=TRUE, force=TRUE)
-
 
     # Check if outdir and outpath already exists
     if(dir.exists(outdir))
@@ -113,5 +131,10 @@ cellranger_count = function(
     if(expanded)
         unlink(dirname(outpath))
 
+    if(!all_files_exist(outfiles))
+        stop(errmsg)
+
     file.create(statusfile)
+
+    invisible(outfiles)
     }

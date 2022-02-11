@@ -39,6 +39,8 @@
 #'      barcodes will be copied
 #' @param copy_h5 **optional** a TRUE value or file path to a location where the `.h5` expression
 #'      count matrix will be copied.
+#' @return a list of paths to the original or copied bam, barcodes and h5 files.
+#'
 #' @seealso [bamtofastq], [cellranger_mkref] and [cellranger_count] for details on the steps
 #'      performed by the `remap` function.
 #' @export 
@@ -73,7 +75,7 @@ remap = function(
         nthreads = nthreads,
         remake = remake
         )
-    cellranger_count(
+    result = cellranger_count(
         id = id,
         fastqdir = fastqdir,
         refdir = refdir,
@@ -83,22 +85,30 @@ remap = function(
         remake = remake
         )
 
-    cellranger_bam = file.path(countdir, "outs", "possorted_genome_bam.bam")
-    cellranger_bar = file.path(countdir, "outs", "filtered_feature_bc_matrix", "barcodes.tsv.gz")
-    cellranger_h5 = file.path(countdir, "outs", "filtered_feature_bc_matrix.h5")
+    cellranger_bam = result$bam
+    cellranger_bar = result$barcodes
+    cellranger_h5 = result$h5
 
     if(isTRUE(copy_bam))
         copy_bam = file.path(outdir, paste0(prefix, ".bam"))
-    if(is.character(copy_bam))
+    if(is.character(copy_bam)){
         file.copy(cellranger_bam, copy_bam, overwrite=remake)
+        result$bam = copy_bam
+        }
 
     if(isTRUE(copy_bar))
         copy_bar = file.path(outdir, paste0(prefix, ".barcodes.txt.gz"))
-    if(is.character(copy_bar))
+    if(is.character(copy_bar)){
         file.copy(cellranger_bar, copy_bar, overwrite=remake)
+        result$barcodes = copy_bar
+        }
 
     if(isTRUE(copy_h5))
         copy_h5 = file.path(outdir, paste0(prefix, ".h5"))
-    if(is.character(copy_bar))
+    if(is.character(copy_h5)){
         file.copy(cellranger_h5, copy_h5, overwrite=remake)
+        result$h5 = copy_h5
+        }
+
+    return(invisible(result))
     }
